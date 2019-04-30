@@ -64,7 +64,7 @@ class App extends Component {
         pass: pass
       }
 
-      axios.post(`/login/${user}/${pass}`).then(LoginResult => {
+      axios.get(`/login/${user}/${pass}`).then(LoginResult => {
         if (LoginResult.data['user']['role'] === 0) {
           axios.get(`/Student/getAdvisorID/${LoginResult.data['user']['id']}`).then(IDResult => {
             const userInfo = LoginResult.data;
