@@ -33,7 +33,8 @@ class StudentController {
             let query = "select a.uniId, a.Day, a.StartTime, a.EndTime, a.TimeBlock\
             from AdvisingTimes as a\
             join students as s\
-            on a.id = ?;";
+            on a.id = s.instructor_id\
+            where a.id = ?";
 
             dbConnection.query(
                 {
