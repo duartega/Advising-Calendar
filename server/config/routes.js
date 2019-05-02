@@ -54,6 +54,7 @@ StudentRouter.get('/getStudentAppointements/:id/', StudentController.getStudentA
 StudentRouter.post('/AddAppointment/:_uniId/:_student_id', StudentController.AddAppointment, (err) => console.log("routers.js: StudentRouter error:", err));
 StudentRouter.delete('/DeleteAppointment/:_uniId/:_student_id', StudentController.DeleteAppointment, (err) => console.log("routers.js: StudentRouter error:", err));
 StudentRouter.get('/getProfessorName/:_student_id', StudentController.getProfessorName, (err) => console.log("routers.js: StudentRouter error:", err));
+StudentRouter.get('/getAppointmentHistory/:_student_id', StudentController.getAppointmentHistory, (err) => console.log("routers.js: StudentRouter error:", err));
 
 /**
  * Register all of the controllers into the default controller.

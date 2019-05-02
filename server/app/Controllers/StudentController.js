@@ -92,6 +92,29 @@ class StudentController {
             }).catch(err => console.log("Database connection error.", err));
     }
 
+    async getAppointmentHistory(ctx) {
+        return new Promise((resolve, reject) => {
+            // Get the students scheduled appointments
+            let query = "call appointmentHistory(?)";
+           
+            dbConnection.query(
+                {
+                    sql: query,
+                    values: [ctx.params._student_id]
+                }, (error, tuples) => {
+                    if (error) {
+                        ctx.body = [];
+                        ctx.status = 200;
+                        return reject(error);
+                    }
+                    ctx.body = tuples;
+                    ctx.status = 200;
+                    return resolve();
+                });
+            }).catch(err => console.log("Database connection error.", err));
+    }
+    
+
     
 
     async DeleteAppointment(ctx) {
