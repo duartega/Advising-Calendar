@@ -22,8 +22,8 @@ const styles = {
 };
 
 function ButtonAppBar(props) {
-  const { classes, loggedIn, logout, role } = props;
-  const name = "Version 1.4"
+  const { classes, loggedIn, logout, role, fname, lname } = props;
+  let name = "Version 1.6"
 
   if(loggedIn === false) { //NOT LOGGED IN
     return (
@@ -40,6 +40,7 @@ function ButtonAppBar(props) {
     );
   }
   else if(role === 0 && loggedIn === true) { //STUDENT NAV
+    name = `${lname}, ${fname}`;
     return (
       <div className={classes.root}>
         <AppBar position="static">
@@ -47,6 +48,10 @@ function ButtonAppBar(props) {
             <Typography variant="h6" color="inherit" className={classes.grow}>
               {name}
             </Typography>
+            <Button color="inherit"><Link className="App-link" to="/AdvisingTimes">Find Advising Times</Link></Button>
+            &nbsp;
+            <Button color="inherit"><Link className="App-link" to="/Appointments">My Appointments</Link></Button>
+            &nbsp;
             <Button onClick={logout} color="inherit">Logout</Button>
           </Toolbar>
         </AppBar>
@@ -54,6 +59,7 @@ function ButtonAppBar(props) {
     );
   }
   else if(role === 1 && loggedIn === true) { //ADVISOR NAV
+    name = `${lname}, ${fname}`;
     return (
       <div className={classes.root}>
         <AppBar position="static">

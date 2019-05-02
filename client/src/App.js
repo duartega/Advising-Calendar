@@ -6,10 +6,11 @@ import Login from './Login';
 import Navbar from './Navbar';
 import EditSchedule from './EditSchedule';
 import AdvisingTimes from './AdvisingTimes';
-import Appointments from './Appointments'
+import Appointments from './StudentAppointments'
 import {
   Route
 } from 'react-router-dom';
+document.title = 'Advising Calendar'; // Tab Title
 
 class App extends Component {
   constructor(props) {
@@ -49,7 +50,9 @@ class App extends Component {
       username: '',
       password: '',
       info: [],
-      instructor_id: null
+      instructor_id: null,
+      fname: '',
+      lname: '',
     })
     //window.location.replace("/"); //NOT THE BEST, BUT IT WORKS...
   }
@@ -75,6 +78,8 @@ class App extends Component {
                 id: userInfo['user']['id'],
                 role: userInfo['user']['role'],
                 instructor_id: insID['user']['instructor_id'],
+                fname: userInfo['user']['fname'],
+                lname: userInfo['user']['lname'],
               });
             }
           })
@@ -85,6 +90,8 @@ class App extends Component {
               loggedIn: true,
               id: userInfo['user']['id'],
               role: userInfo['user']['role'],
+              fname: userInfo['user']['fname'],
+              lname: userInfo['user']['lname'],
             });
           }
         }
@@ -94,120 +101,57 @@ class App extends Component {
 
   render() {
       if (this.state.loggedIn === false) { //NOT LOGGED IN
-        return ( <
-          div >
-          <
-          Navbar loggedIn = {
-            this.state.loggedIn
-          }
-          role = {
-            this.state.role
-          }
-          /> <
-          Route exact path = "/Login"
-          render = {
-            (props) =>
-            <
-            Login
-            handleUserChange = {
-              this.handleUserChange
-            }
-            handlePassChange = {
-              this.handlePassChange
-            }
-            handleSubmit = {
-              this.handleSubmit
-            }
-            />}/ >
-            <
-            /div>
+        return ( 
+        <div >
+          <Navbar loggedIn = {this.state.loggedIn} role = {this.state.role}/> 
+          <Route exact path = "/Login"
+          render = {(props) => 
+            <Login 
+            handleUserChange = {this.handleUserChange} 
+            handlePassChange = {this.handlePassChange} 
+            handleSubmit = {this.handleSubmit}
+            />}
+            />
+            </div>
           );
         }
         else if (this.state.role === 0 && this.state.loggedIn === true) { //STUDENT
-          return ( <
-              div >
-              <
-              Navbar loggedIn = {
-                this.state.loggedIn
-              }
-              logout = {
-                this.handleLogout
-              }
-              role = {
-                this.state.role
-              }
-              /> {
-            } <
-            Route exact path = "/Login"
-          render = {
-            (props) =>
-            <
-            AdvisingTimes
-            id = {
-              this.state.id
-            }
-            instructor_id = {
-              this.state.instructor_id
-            }
-            />}/ >
-            <
-            Route exact path = "/Appointments"
-            render = {
-              (props) =>
-              <
-              Appointments /
-              >
-            }
+          return ( 
+            <div >
+              {console.log("Here is the state: ", this.state)}
+              <Navbar loggedIn = {this.state.loggedIn} logout = {this.handleLogout} 
+              role = {this.state.role} 
+              fname={this.state.fname}
+              lname={this.state.lname}
+              /> {} 
+              <Route exact path = "/Login" />
+              <Route exact path = "/Appointments" 
+              render = {(props) => <Appointments id = {this.state.id} instructor_id = {this.state.instructor_id} />}
+              />
+
+            <Route exact path = "/AdvisingTimes"
+            render = {(props) => <AdvisingTimes id = {this.state.id} instructor_id = {this.state.instructor_id} />}
             />
 
-            <
-            /div>
+            </div>
           );
         } else if (this.state.role === 1 && this.state.loggedIn === true) { //ADVISOR
-          return ( <
-            div >
-            <
-            Navbar loggedIn = {
-              this.state.loggedIn
-            }
-            logout = {
-              this.handleLogout
-            }
-            role = {
-              this.state.role
-            }
-            />
-
-            <
-            Route exact path = "/Login"
-            render = {
-              (props) => //DEFAULT
-              <
-              EditSchedule
-              id = {
-                this.state.id
-              }
-              />}/ >
-              <
-              Route exact path = "/EditSchedule"
-              render = {
-                (props) =>
-                <
-                EditSchedule
-                id = {
-                  this.state.id
-                }
-                />}/ >
-                <
-                Route exact path = "/Appointments"
-                render = {
-                  (props) =>
-                  <
-                  Appointments /
-                  >
-                }
-                /> < /
-                div >
+          return ( 
+            <div >
+            <Navbar loggedIn = {this.state.loggedIn} logout = {this.handleLogout} 
+            role = {this.state.role} 
+            fname={this.state.fname}
+            lname={this.state.lname}/>
+            <Route exact path = "/Login"
+            render = {(props) => //DEFAULT
+              <EditSchedule id = {this.state.id} />}
+              />
+              <Route exact path = "/EditSchedule"
+              render = {(props) => <EditSchedule id = {this.state.id} />}
+              />
+                <Route exact path = "/Appointments"
+                render = {(props) => <Appointments />}/> 
+                </div >
               );
             }
           }

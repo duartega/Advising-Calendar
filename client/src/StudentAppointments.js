@@ -21,7 +21,8 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import axios from './ConfigAxios';
 import Button from '@material-ui/core/Button';
 import green from '@material-ui/core/colors/green';
-document.title = 'Add Appointment'; // Tab Title
+import red from '@material-ui/core/colors/red';
+document.title = 'My Appointments'; // Tab Title
 
 
 function createData(id, day, starttime, endtime, timeblock) {
@@ -57,7 +58,6 @@ const rows = [
   { id: 'starttime', numeric: false, disablePadding: false, label: 'Start Times' },
   { id: 'endtime', numeric: false, disablePadding: false, label: 'End Times' },
   { id: 'timeblock', numeric: false, disablePadding: false, label: 'Time Blocks' },
-  { id: 'Advisor', numeric: false, disablePadding: false, label: 'Advisor' },
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -122,12 +122,12 @@ const toolbarStyles = theme => ({
 
   root: {
     paddingRight: theme.spacing.unit,
-    color: green[200],
+    color: red[200],
   },
 
   highlight: {
-          color: green[200],
-          backgroundColor: green[500],
+          color: red[200],
+          backgroundColor: red[900],
         },
   spacer: {
     flex: '1 1 100%',
@@ -141,15 +141,13 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-  const { data, Selected, numSelected, classes, updateSelected, update, student_id, instructor_fname, instructor_lname } = props;
-  
-
-  function addRow() {
+  const { Selected, numSelected, classes, updateSelected, update, student_id } = props;
+ //https://material-ui.com/demos/dialogs/ this will give us a confirmation dialog
+  function deleteRow() {
     let values = Selected;
-
     for(let i = 0; i < values.length; i++) {
       console.log(values[i]);
-      axios.post(`/Student/AddAppointment/${Selected[i]}/${student_id}`);
+      axios.delete(`/Student/DeleteAppointment/${Selected[i]}/${student_id}`);
     }
     //alert("item/s deleted!")
     updateSelected(values);
@@ -162,32 +160,43 @@ let EnhancedTableToolbar = props => {
       })}
     >
       <div className={classes.title}>
-        {data > 0 ? (
-          <Typography  variant="subtitle1">
-            Your current advisor is: {instructor_lname}, {instructor_fname} <br/><br/>
-            Select a time slot to register for an appointement. <br/> There are currently ({data}) appointements avaiable.
-            <br/><br/>
-            You have {numSelected} selected currently.
+        {numSelected > 0 ? (
+          <Typography color="inherit" variant="subtitle1">
+            {numSelected} selected
           </Typography>
         ) : (
           <Typography variant="h6" id="tableTitle">
-            There are currently no available appointements.
+            My current advising appointments
           </Typography>
         )}
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>
         {
-          <Tooltip title="Add Appointment Selection">
-            <IconButton onClick={addRow} aria-label="Add Appointment Selection">
-              <AddIcon />
+          <Tooltip title="Delete Selected Appointment">
+            <IconButton onClick={deleteRow} aria-label="Delete Selected Appointment">
+              <DeleteIcon />
             </IconButton>
           </Tooltip>
-       }
+        }
       </div>
     </Toolbar>
   );
 };
+
+// {numSelected > 0 ? (
+//     <Tooltip title="Delete Selected Appointment">
+//       <IconButton onClick={deleteRow} aria-label="Delete Selected Appointment">
+//         <DeleteIcon />
+//       </IconButton>
+//     </Tooltip>
+//   ) : (
+//     <Tooltip title="refresh">
+//       <Button variant="outlined" color="primary" className={classes.button} onClick={update} aria-label="refresh">
+//         Refresh
+//       </Button>
+//     </Tooltip>
+//   )}
 
 EnhancedTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
@@ -210,7 +219,6 @@ const styles = theme => ({
 });
 
 class EnhancedTable extends React.Component {
-  
   state = {
     order: 'asc',
     orderBy: 'day',
@@ -219,25 +227,23 @@ class EnhancedTable extends React.Component {
     page: 0,
     rowsPerPage: 5,
     student_id: this.props.id,
-    instructor_fname: '',
-    instructor_lname: '',
   };
-  
 
   // This is the function to pull the data again when the user clicks the refresh button
   update = (props) => {
-    const { id, instructor_id } = this.props;
-    let array = [];
-    // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
-    axios.get(`/Student/getAdvisingTimes/${id}`).then(result => {
-      for(let i = 0; i < result.data[0].length; i++) {
-        array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], result.data[0][i]['StartTime'],
-          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock']))
-      }
-      this.setState({
-        data: array
-      })
-    })
+    // const { id, instructor_id } = this.props;
+    // let array = [];
+    // // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
+    // axios.get(`/Student/getStudentAppointements/${id}`).then(result => {
+
+    //   for(let i = 0; i < result.data.length; i++) {
+    //     array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], result.data[0][i]['StartTime'],
+    //       result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock']))
+    //   }
+    //   this.setState({
+    //     data: array
+    //   })
+    // })
   }
 
   async componentDidMount() {
@@ -246,24 +252,15 @@ class EnhancedTable extends React.Component {
     this.setState({student_id: id})
 
     // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
-    axios.get(`/Student/getAdvisingTimes/${id}`).then(result => {
-      for(let i = 0; i < result.data[0].length; i++) {
-        array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], result.data[0][i]['StartTime'],
-          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock']))
+    axios.get(`/Student/getStudentAppointements/${id}`).then(result => {
+      for(let i = 0; i < result.data.length; i++) {
+        array.push(createData(result.data[i]['uniId'], result.data[i]['Day'], result.data[i]['StartTime'],
+          result.data[i]['EndTime'], result.data[i]['TimeBlock']))
       }
       this.setState({
         data: array
       })
     })
-
-    axios.get(`/Student/getProfessorName/${id}`).then(result => {
-      console.log(result.data[0][0])
-      this.setState({
-        instructor_fname: result.data[0][0]['fname'],
-        instructor_lname: result.data[0][0 ]['lname']
-      })
-    })
-
   }
 
   updateSelected=(values) => {
@@ -339,15 +336,7 @@ class EnhancedTable extends React.Component {
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar data={data.length} 
-        numSelected={selected.length} 
-        Selected={selected} 
-        updateSelected={this.updateSelected} 
-        update={this.update} 
-        student_id={this.state.student_id}
-        instructor_fname={this.state.instructor_fname}
-        instructor_lname={this.state.instructor_lname}
-        />
+        <EnhancedTableToolbar numSelected={selected.length} Selected={selected} updateSelected={this.updateSelected} update={this.update} student_id={this.state.student_id}/>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead

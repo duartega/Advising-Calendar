@@ -6,9 +6,7 @@ class StudentController {
     async advisorLookup(ctx) {
         return new Promise((resolve, reject) => {
         let query = "SELECT uniID, users.id, fname, lname FROM userAdvisors INNER JOIN users ON userAdvisors.advisorId = users.id WHERE userAdvisors.id = ?;";
-	    console.log('About to run this query.', query);
-        //console.log('ctx.params.user is', ctx.params.user);
-        //console.log('ctx.params.password is', ctx.params.password);
+
         dbConnection.query(
             {
                 sql: query,
@@ -29,13 +27,10 @@ class StudentController {
 
     async getAdvisorAdvisingSchedule(ctx) {
         return new Promise((resolve, reject) => {
-            // Get the advising times by joining the students profile to their instructors i.d.
-            let query = "select a.uniId, a.Day, a.StartTime, a.EndTime, a.TimeBlock\
-            from AdvisingTimes as a\
-            join students as s\
-            on a.id = s.instructor_id\
-            where a.id = ?";
-
+            // Get the advising times based on the instructors i.d that is linked to the students profile
+            // Check the sql file for the stored procedure below
+            let query = "call getUnfilledAppointementSlots(?)";
+           
             dbConnection.query(
                 {
                     sql: query,
@@ -53,7 +48,95 @@ class StudentController {
             }).catch(err => console.log("Database connection error.", err));
     }
 
+    async getStudentAppointements(ctx) {
+        return new Promise((resolve, reject) => {
+            // Get the students scheduled appointments
+            let query = "select * from AdvisingTimes where Student_ID_Registered = ?;";
+           
+            dbConnection.query(
+                {
+                    sql: query,
+                    values: [ctx.params.id]
+                }, (error, tuples) => {
+                    if (error) {
+                        ctx.body = [];
+                        ctx.status = 200;
+                        return reject(error);
+                    }
+                    ctx.body = tuples;
+                    ctx.status = 200;
+                    return resolve();
+                });
+            }).catch(err => console.log("Database connection error.", err));
+    }
 
+    async AddAppointment(ctx) {
+        return new Promise((resolve, reject) => {
+            // Get the students scheduled appointments
+            let query = "call updateAdvisingTimesWithStudentID(?, ?)";
+           
+            dbConnection.query(
+                {
+                    sql: query,
+                    values: [ctx.params._uniId, ctx.params._student_id]
+                }, (error, tuples) => {
+                    if (error) {
+                        ctx.body = [];
+                        ctx.status = 200;
+                        return reject(error);
+                    }
+                    ctx.body = tuples;
+                    ctx.status = 200;
+                    return resolve();
+                });
+            }).catch(err => console.log("Database connection error.", err));
+    }
+
+    
+
+    async DeleteAppointment(ctx) {
+        return new Promise((resolve, reject) => {
+            // Get the students scheduled appointments
+            let query = "call deleteStudentIDFromAdvisingTimes(?, ?)";
+           
+            dbConnection.query(
+                {
+                    sql: query,
+                    values: [ctx.params._uniId, ctx.params._student_id]
+                }, (error, tuples) => {
+                    if (error) {
+                        ctx.body = [];
+                        ctx.status = 200;
+                        return reject(error);
+                    }
+                    ctx.body = tuples;
+                    ctx.status = 200;
+                    return resolve();
+                });
+            }).catch(err => console.log("Database connection error.", err));
+    }
+
+    async getProfessorName(ctx) {
+        return new Promise((resolve, reject) => {
+            // Get the students scheduled appointments
+            let query = "call getProfessorNameByStudentId(?)";
+           
+            dbConnection.query(
+                {
+                    sql: query,
+                    values: ctx.params._student_id
+                }, (error, tuples) => {
+                    if (error) {
+                        ctx.body = [];
+                        ctx.status = 200;
+                        return reject(error);
+                    }
+                    ctx.body = tuples;
+                    ctx.status = 200;
+                    return resolve();
+                });
+            }).catch(err => console.log("Database connection error.", err));
+    }
 
     async getAdvisorID(ctx) {
         return new Promise((resolve, reject) => {
