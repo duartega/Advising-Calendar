@@ -42,6 +42,8 @@ const AdvisingRouter = require('koa-router')({
 AdvisingRouter.post('/AddTime/:id/:day/:starttime/:endtime/:timeblock', AdvisingController.addTimes, (err) => console.log("routers.js: AdvisingRouter error:", err));
 AdvisingRouter.get('/GetTime/:id', AdvisingController.getTimes, (err) => console.log("routers.js: AdvisingRouter error:", err));
 AdvisingRouter.delete('/DeleteTime/:uniId', AdvisingController.deleteTimes, (err) => console.log("routers.js: AdvisingRouter error:", err));
+AdvisingRouter.get('/RegisteredAppointments/:_instructor_id', AdvisingController.GetAppointments, (err) => console.log("routers.js: AdvisingRouter error:", err));
+AdvisingRouter.get('/getStudentName/:_student_id', AdvisingController.GetStudentName, (err) => console.log("routers.js: AdvisingRouter error:", err));
 
 const StudentController = new (require('../app/Controllers/StudentController.js'))();
 const StudentRouter = require('koa-router')({

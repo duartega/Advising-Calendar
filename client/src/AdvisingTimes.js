@@ -24,8 +24,8 @@ import green from '@material-ui/core/colors/green';
 document.title = 'Add Appointment'; // Tab Title
 
 
-function createData(id, day, starttime, endtime, timeblock) {
-  return {id, day, starttime, endtime, timeblock};
+function createData(id, day, starttime, endtime, timeblock, instructor_fname, instructor_lname) {
+  return {id, day, starttime, endtime, timeblock, instructor_fname, instructor_lname};
 }
 
 function desc(a, b, orderBy) {
@@ -57,7 +57,8 @@ const rows = [
   { id: 'starttime', numeric: false, disablePadding: false, label: 'Start Times' },
   { id: 'endtime', numeric: false, disablePadding: false, label: 'End Times' },
   { id: 'timeblock', numeric: false, disablePadding: false, label: 'Time Blocks' },
-  { id: 'Advisor', numeric: false, disablePadding: false, label: 'Advisor' },
+  { id: 'AdvisorLastName', numeric: false, disablePadding: false, label: 'Advisor Last Name' },
+  { id: 'AdvisorFirstName', numeric: false, disablePadding: false, label: 'Advisor First Name' },
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -247,22 +248,26 @@ class EnhancedTable extends React.Component {
 
     // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
     axios.get(`/Student/getAdvisingTimes/${id}`).then(result => {
+      axios.get(`/Student/getProfessorName/${id}`).then(profNameResult => {
+      console.log(profNameResult.data[0][0]);
       for(let i = 0; i < result.data[0].length; i++) {
         array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], result.data[0][i]['StartTime'],
-          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock']))
+          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock'], 
+          profNameResult.data[0][0]['fname'], profNameResult.data[0][0]['lname']))
       }
       this.setState({
         data: array
       })
     })
+  })
 
-    axios.get(`/Student/getProfessorName/${id}`).then(result => {
-      console.log(result.data[0][0])
-      this.setState({
-        instructor_fname: result.data[0][0]['fname'],
-        instructor_lname: result.data[0][0 ]['lname']
-      })
-    })
+    // axios.get(`/Student/getProfessorName/${id}`).then(result => {
+    //   console.log(result.data[0][0])
+    //   this.setState({
+    //     instructor_fname: result.data[0][0]['fname'],
+    //     instructor_lname: result.data[0][0 ]['lname']
+    //   })
+    // })
 
   }
 
@@ -382,6 +387,8 @@ class EnhancedTable extends React.Component {
                       <TableCell align="left">{n.starttime}</TableCell>
                       <TableCell align="left">{n.endtime}</TableCell>
                       <TableCell align="left">{n.timeblock}</TableCell>
+                      <TableCell align="left">{n.instructor_fname}</TableCell>
+                      <TableCell align="left">{n.instructor_lname}</TableCell>
                     </TableRow>
                   );
                 })}

@@ -7,7 +7,7 @@ import Login from './Login';
 import Navbar from './Navbar';
 import EditSchedule from './EditSchedule';
 import AdvisingTimes from './AdvisingTimes';
-import Appointments from './StudentAppointments'
+import Appointments from './Appointments'
 import {
   Route
 } from 'react-router-dom';
@@ -139,8 +139,8 @@ class App extends Component {
         } else if (this.state.role === 1 && this.state.loggedIn === true) { //ADVISOR
           return ( 
             <div >
-            <Navbar loggedIn = {this.state.loggedIn} logout = {this.handleLogout} 
-            role = {this.state.role} 
+            <Navbar loggedIn = {this.state.loggedIn} logout = {this.handleLogout}
+            role = {this.state.role}
             fname={this.state.fname}
             lname={this.state.lname}/>
             <Route exact path = "/Login"
@@ -151,9 +151,9 @@ class App extends Component {
               render = {(props) => <EditSchedule id = {this.state.id} />}
               />
               <Route exact path = "/UserList"
-              render = {(props) => <UserList />}/> 
+              render = {(props) => <UserList />}/>
               <Route exact path = "/Appointments"
-              render = {(props) => <Appointments />}/> 
+              render = {(props) => <Appointments id= {this.state.id} />}/>
               </div >
               );
             }

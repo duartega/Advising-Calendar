@@ -74,6 +74,51 @@ class AdvisingController {
 
     }
 
+    async GetAppointments(ctx) {
+        return new Promise((resolve, reject) => {
+        let query = "call getRegisteredAppointments(?)";
+	    console.log('About to run this query.', query);
+        console.log('ctx.params.id is', ctx.params.id);
+        dbConnection.query(
+            {
+                sql: query,
+                values: [ctx.params._instructor_id]
+            }, (error, tuples) => {
+                if (error) {
+                    ctx.body = [];
+                    ctx.status = 200;
+                    return reject(error);
+                }
+                ctx.body = tuples;
+                ctx.status = 200;
+                return resolve();
+            });
+        }).catch(err => console.log("Database connection error.", err));
+
+    }
+
+    async GetStudentName(ctx) {
+        return new Promise((resolve, reject) => {
+        let query = "select fname, lname from users where id = ?;"
+        dbConnection.query(
+            {
+                sql: query,
+                values: [ctx.params._student_id]
+            }, (error, tuples) => {
+                if (error) {
+                    ctx.body = [];
+                    ctx.status = 200;
+                    return reject(error);
+                }
+                ctx.body = tuples;
+                ctx.status = 200;
+                return resolve();
+            });
+        }).catch(err => console.log("Database connection error.", err));
+
+    }
+
+
 }
 
 module.exports = AdvisingController;

@@ -2,6 +2,10 @@
 /client/README.md
 /client/.env
 /client/.env~
+/client/src/.env
+/client/src/.env~
+/client/src/ConfixAxios.js
+
 
 /server/node_modules
-
+/server/server.js

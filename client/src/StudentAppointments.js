@@ -58,6 +58,10 @@ const rows = [
   { id: 'starttime', numeric: false, disablePadding: false, label: 'Start Times' },
   { id: 'endtime', numeric: false, disablePadding: false, label: 'End Times' },
   { id: 'timeblock', numeric: false, disablePadding: false, label: 'Time Blocks' },
+  { id: 'AdvisorLastName', numeric: false, disablePadding: false, label: 'Advisor Last Name' },
+  { id: 'AdvisorFirstName', numeric: false, disablePadding: false, label: 'Advisor First Name' },
+  { id: 'Notes', numeric: false, disablePadding: false, label: 'Notes' },
+
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -231,19 +235,19 @@ class EnhancedTable extends React.Component {
 
   // This is the function to pull the data again when the user clicks the refresh button
   update = (props) => {
-    // const { id, instructor_id } = this.props;
-    // let array = [];
-    // // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
-    // axios.get(`/Student/getStudentAppointements/${id}`).then(result => {
+    const { id, instructor_id } = this.props;
+    let array = [];
+    // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
+    axios.get(`/Student/getStudentAppointements/${id}`).then(result => {
 
-    //   for(let i = 0; i < result.data.length; i++) {
-    //     array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], result.data[0][i]['StartTime'],
-    //       result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock']))
-    //   }
-    //   this.setState({
-    //     data: array
-    //   })
-    // })
+      for(let i = 0; i < result.data.length; i++) {
+        array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], result.data[0][i]['StartTime'],
+          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock']))
+      }
+      this.setState({
+        data: array
+      })
+    })
   }
 
   async componentDidMount() {
@@ -371,6 +375,9 @@ class EnhancedTable extends React.Component {
                       <TableCell align="left">{n.starttime}</TableCell>
                       <TableCell align="left">{n.endtime}</TableCell>
                       <TableCell align="left">{n.timeblock}</TableCell>
+                      <TableCell align="left">{n.AdvisorLastName}</TableCell>
+                      <TableCell align="left">{n.AdvisorFirstName}</TableCell>
+                      <TableCell align="left">{n.Notes}</TableCell>
                     </TableRow>
                   );
                 })}
