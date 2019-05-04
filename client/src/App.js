@@ -1,6 +1,7 @@
 import React, {
   Component
 } from 'react';
+import UserList from './UserList';
 import axios from './ConfigAxios';
 import Login from './Login';
 import Navbar from './Navbar';
@@ -149,9 +150,11 @@ class App extends Component {
               <Route exact path = "/EditSchedule"
               render = {(props) => <EditSchedule id = {this.state.id} />}
               />
-                <Route exact path = "/Appointments"
-                render = {(props) => <Appointments />}/> 
-                </div >
+              <Route exact path = "/UserList"
+              render = {(props) => <UserList />}/> 
+              <Route exact path = "/Appointments"
+              render = {(props) => <Appointments />}/> 
+              </div >
               );
             }
           }

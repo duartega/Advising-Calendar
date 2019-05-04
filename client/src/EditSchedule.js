@@ -36,7 +36,6 @@ const styles = theme => ({
         super(props);
         this.state = {
         day: '',
-        time: '',
         start: '07:30',
         end: '09:30',
         labelWidth: 0,
@@ -48,6 +47,32 @@ const styles = theme => ({
     
     handleSubmit(props) {
       const { id } = this.props;
+
+      function timeList(startVal, endVal) {
+        let startArray = []
+        let endArray = []
+        console.log("start time: ", startVal)
+        console.log("end time: ", endVal)
+        var start = startVal;
+        var startArr = start.split(":");
+        var finish = endVal;
+        var finishArr = finish.split(":");
+        if(startArr[0] >= finishArr[0]) {
+          console.log(startArr[0], ">=", finishArr[0])
+          return "null"
+        }
+        var hourDiff = Math.abs(finishArr[0] - startArr[0]);
+        var minDiff = Math.floor((Math.abs(finishArr[1] - startArr[1]) / 59)*100);
+        if (minDiff.toString().length == 1) 
+            minDiff = '0' + minDiff;
+
+        var output = hourDiff + "." + minDiff;
+        let value = output;
+
+        return value;
+
+      }
+
       function findKeyValue(key) {
         let map = [
         {key: 10, value: "Monday"},
@@ -69,16 +94,19 @@ const styles = theme => ({
       let dayValue = findKeyValue(this.state.day);
       let startValue = this.state.start;
       let endValue = this.state.end;
-      let timeValue = this.state.time;
+      let timeValue = timeList(startValue, endValue)
       if(idValue === undefined || dayValue === undefined ||
         startValue === undefined || endValue === undefined ||
         timeValue === undefined || timeValue === "") {
           alert("Error, Please make sure all values are filled!")
-        }
-        else {
-          alert("Advising Time has been added!")
-          axios.post(`/Advising/AddTime/${idValue}/${dayValue}/${startValue}/${endValue}/${timeValue}`)
-        }
+      }
+      else if(timeValue == "null") {
+        alert("Error, start time cannot be greater than end time")
+      }
+      else {
+        alert("Advising Time has been added!")
+        axios.post(`/Advising/AddTime/${idValue}/${dayValue}/${startValue}/${endValue}/${timeValue}`)
+      }
     }
 
     handleStartChange(event) {
@@ -156,25 +184,7 @@ const styles = theme => ({
                 }}
                 />
                 </form>
-                <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="time-simple">Time Block</InputLabel>
-                <Select
-                value={this.state.time}
-                onChange={this.handleChange}
-                inputProps={{
-                    name: 'time',
-                    id: 'time-simple',
-                }}
-                >
-                <MenuItem value="">
-                    <em>None</em>
-                </MenuItem>
-                <MenuItem value={10}>10 Min</MenuItem>
-                <MenuItem value={20}>20 Min</MenuItem>
-                <MenuItem value={30}>30 Min</MenuItem>
-                <MenuItem value={40}>40 Min</MenuItem>
-                </Select>
-            </FormControl>
+              
             </form>
             
             <br></br>

@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import {Link} from 'react-router-dom';
 import './App.css';
+import AdvisorLongMenu from './AdvisorLongMenu';
 
 const styles = {
   root: {
@@ -72,6 +73,8 @@ function ButtonAppBar(props) {
             <Button color="inherit"><Link className="App-link" to="/EditSchedule">Edit Schedule</Link></Button>
             &nbsp;
             <Button onClick={logout} color="inherit">Logout</Button>
+            &nbsp;
+            <AdvisorLongMenu/>
           </Toolbar>
         </AppBar>
       </div>
