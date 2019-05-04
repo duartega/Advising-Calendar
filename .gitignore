@@ -5,7 +5,8 @@
 /client/src/.env
 /client/src/.env~
 /client/src/ConfixAxios.js
-
+/client.DS_Store
+.DS_Store
 
 /server/node_modules
 /server/server.js
