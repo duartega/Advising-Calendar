@@ -155,7 +155,7 @@ const styles = theme => ({
       var mushed = year + "-" + (month+1) + "-" + day
       console.log("Mushed together: ", mushed)
       console.log("Weekday: ", days[weekday], " and day: ", day, " and month: ", month, " and year: ", year)
-      this.setState({day: days[weekday], enddate: mushed})
+      this.setState({enddate: mushed})
       // console.log("EVENT: ", event);
     }
 
