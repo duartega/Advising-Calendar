@@ -51,16 +51,12 @@ const styles = theme => ({
       function timeList(startVal, endVal) {
         let startArray = []
         let endArray = []
-        console.log("start time: ", startVal)
-        console.log("end time: ", endVal)
+
         var start = startVal;
         var startArr = start.split(":");
         var finish = endVal;
         var finishArr = finish.split(":");
-        if(startArr[0] >= finishArr[0]) {
-          console.log(startArr[0], ">=", finishArr[0])
-          return "null"
-        }
+
         var hourDiff = Math.abs(finishArr[0] - startArr[0]);
         var minDiff = Math.floor((Math.abs(finishArr[1] - startArr[1]) / 59)*100);
         if (minDiff.toString().length == 1) 

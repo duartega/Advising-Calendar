@@ -147,11 +147,11 @@ let EnhancedTableToolbar = props => {
   const { Selected, numSelected, classes, updateSelected, update, student_id, another_id } = props;
  //https://material-ui.com/demos/dialogs/ this will give us a confirmation dialog
   function deleteRow() {
-    let note = "opps!";
+
     let values = Selected;
     for(let i = 0; i < values.length; i++) {
       console.log(values[i]);
-      axios.delete(`/Student/DeleteAppointment/${Selected[i]}/${student_id}`);
+      axios.delete(`/Advising/DeleteTime/${values[i]}`);
       axios.post(`Advising/notifyStudent/${another_id[i]}`);
     }
     //alert("item/s deleted!")
