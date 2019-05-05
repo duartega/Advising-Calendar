@@ -144,13 +144,15 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-  const { Selected, numSelected, classes, updateSelected, update, student_id } = props;
+  const { Selected, numSelected, classes, updateSelected, update, student_id, another_id } = props;
  //https://material-ui.com/demos/dialogs/ this will give us a confirmation dialog
   function deleteRow() {
+    let note = "opps!";
     let values = Selected;
     for(let i = 0; i < values.length; i++) {
       console.log(values[i]);
       axios.delete(`/Student/DeleteAppointment/${Selected[i]}/${student_id}`);
+      axios.post(`Advising/notifyStudent/${another_id[i]}`);
     }
     //alert("item/s deleted!")
     updateSelected(values);
@@ -230,6 +232,7 @@ class EnhancedTable extends React.Component {
     page: 0,
     rowsPerPage: 5,
     student_id: this.props.id,
+    another_id: []
   };
 
   // This is the function to pull the data again when the user clicks the refresh button
@@ -253,6 +256,7 @@ class EnhancedTable extends React.Component {
     const { id, instructor_id } = this.props;
     let array = [];
     this.setState({student_id: id})
+    let anotherArray = [];
 
     // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
     axios.get(`/Advising/RegisteredAppointments/${id}`).then(result => {
@@ -262,9 +266,11 @@ class EnhancedTable extends React.Component {
       for(let i = 0; i < result.data[0].length; i++) {
         array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], result.data[0][i]['StartTime'],
           result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock'], result.data[0][i]['Student_ID_Registered']))
+        anotherArray.push(result.data[0][i]['Student_ID_Registered'])
       }
       this.setState({
-        data: array
+        data: array,
+        another_id: anotherArray
       })
     })
   })
@@ -343,7 +349,7 @@ class EnhancedTable extends React.Component {
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar numSelected={selected.length} Selected={selected} updateSelected={this.updateSelected} update={this.update} student_id={this.state.student_id}/>
+        <EnhancedTableToolbar numSelected={selected.length} Selected={selected} updateSelected={this.updateSelected} update={this.update} student_id={this.state.student_id} another_id={this.state.another_id}/>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead

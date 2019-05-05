@@ -189,6 +189,60 @@ class StudentController {
                 );
             }).catch(err => console.log("Database connection error.", err));
     }
+
+    async getNotifications(ctx) {
+        return new Promise((resolve, reject) => {
+            // Get the advising times by joining the students profile to their instructors i.d.
+            let query = "SELECT notify FROM users WHERE id = ?;";
+
+            dbConnection.query(
+                {
+                    sql: query,
+                    values: [ctx.params.user_id]
+                }, (error, tuples) => {
+                    if (error) {
+                        ctx.body = [];
+                        ctx.status = 200;
+                        return reject(error);
+                    }
+                    if (tuples.length === 1) {
+                        console.log('from LoginController. About to return ', tuples[0]);
+                        ctx.body = {
+                            status: "OK",
+                            user: tuples[0],
+                        };
+                        return resolve();
+                    }
+                    return reject("No such user.");
+                }
+                );
+            }).catch(err => console.log("Database connection error.", err));
+    }
+
+    async deleteNotifications(ctx) {
+        return new Promise((resolve, reject) => {
+        let query = "UPDATE cs386_jsmith.users SET notify = 0 WHERE id = ?";
+	    console.log('About to run this query.', query);
+            dbConnection.query(
+                {
+                    sql: query,
+                    values: [ctx.params.studentId]
+                }, (error) => {
+                    if (error) {
+                        return reject(error);
+                    }
+                }
+                
+            )
+        }).catch(err => {
+            ctx.body = {
+                status: "Failed",
+                error: err,
+                user: null
+            };
+        });
+
+    }
 }
 
 module.exports = StudentController;
