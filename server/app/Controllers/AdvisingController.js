@@ -142,6 +142,27 @@ class AdvisingController {
 
     }
 
+    async getAllUsers(ctx) {
+        return new Promise((resolve, reject) => {
+        let query = "SELECT id, user, fname, lname FROM cs386_jsmith.users WHERE role = 0";
+	    console.log('About to run this query.', query);
+        dbConnection.query(
+            {
+                sql: query,
+            }, (error, tuples) => {
+                if (error) {
+                    ctx.body = [];
+                    ctx.status = 200;
+                    return reject(error);
+                }
+                ctx.body = tuples;
+                ctx.status = 200;
+                return resolve();
+            });
+        }).catch(err => console.log("Database connection error.", err));
+
+    }
+
 
 }
 
