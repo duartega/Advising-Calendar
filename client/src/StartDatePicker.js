@@ -13,8 +13,6 @@ const styles = {
   },
 };
 
-
-
 class MaterialUIPickers extends React.Component {
   state = {
     // The first commit of Material-UI
@@ -32,7 +30,6 @@ class MaterialUIPickers extends React.Component {
     const { selectedDate } = this.state;
 
     return (
-      
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Grid container className={classes.grid} justify="space-around">
           <DatePicker

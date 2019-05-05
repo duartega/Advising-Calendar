@@ -11,10 +11,11 @@ import EditTable from './EditTable';
 import axios from './ConfigAxios';
 import StartDatePicker from './StartDatePicker';
 import EndDatePicker from './EndDatePicker';
-import { getDay } from 'date-fns/esm';
+import { getDay, format, parse, getDate, getYear, getMonth } from 'date-fns/esm';
 import DateFnsUtils from '@date-io/date-fns';
 
 const days = {0: "Sunday", 1: "Monday", 2: "Tuesday", 3: "Wednesday", 4: "Thursday", 5: "Friday", 6: "Saturday"}
+const months = {0: "January"}
 
 const styles = theme => ({
     root: {
@@ -52,7 +53,8 @@ const styles = theme => ({
       this.handleSubmit = this.handleSubmit.bind(this);
       this.handleStartChange = this.handleStartChange.bind(this);
       this.handleEndChange = this.handleEndChange.bind(this);
-      this.dayChange = this.dayChange.bind(this);
+      this.startDateChange = this.startDateChange.bind(this);
+      this.endDateChange = this.endDateChange.bind(this);
     }
     
     handleSubmit(props) {
@@ -100,6 +102,8 @@ const styles = theme => ({
       let dayValue = this.state.day;
       let startValue = this.state.start;
       let endValue = this.state.end;
+      let startDate = this.state.startdate;
+      let endDate = this.state.enddate;
       let timeValue = timeList(startValue, endValue)
       if(idValue === undefined || dayValue === undefined ||
         startValue === undefined || endValue === undefined ||
@@ -111,7 +115,7 @@ const styles = theme => ({
       }
       else {
         alert("Advising Time has been added!")
-        axios.post(`/Advising/AddTime/${idValue}/${dayValue}/${startValue}/${endValue}/${timeValue}`)
+        axios.post(`/Advising/AddTime/${idValue}/${dayValue}/${startValue}/${endValue}/${timeValue}/${startDate}/${endDate}`)
       }
     }
 
@@ -129,12 +133,32 @@ const styles = theme => ({
 
     onChange = date => this.setState({ date })
 
-    dayChange = event => {
-      var d = getDay(new Date(event)); // Get the day of the week
-      console.log("THIS WORKS: ", days[d])
-      this.setState({day: days[d]})
+    startDateChange = event => {
+      var weekday = getDay(new Date(event)); // Get the day of the week
+      var day = getDate(new Date(event));
+      var month = getMonth(new Date(event));
+      var year = getYear(new Date(event));
+
+      var mushed = year + "-" + (month+1) + "-" + day
+      console.log("Mushed together: ", mushed)
+      console.log("Weekday: ", days[weekday], " and day: ", day, " and month: ", month, " and year: ", year)
+      this.setState({day: days[weekday], startdate: mushed})
       // console.log("EVENT: ", event);
     }
+
+    endDateChange = event => {
+      var weekday = getDay(new Date(event)); // Get the day of the week
+      var day = getDate(new Date(event));
+      var month = getMonth(new Date(event));
+      var year = getYear(new Date(event));
+
+      var mushed = year + "-" + (month+1) + "-" + day
+      console.log("Mushed together: ", mushed)
+      console.log("Weekday: ", days[weekday], " and day: ", day, " and month: ", month, " and year: ", year)
+      this.setState({day: days[weekday], enddate: mushed})
+      // console.log("EVENT: ", event);
+    }
+
     render() {
       const { classes, id } = this.props;
   
@@ -201,10 +225,10 @@ const styles = theme => ({
 
                 <form className={classes.container} noValidate>
                 {/* render = {(props) => <EditSchedule id = {this.state.id} */}
-                  <StartDatePicker onChange={this.onChange} value={this.state.startdate} action={this.dayChange} />
+                  <StartDatePicker onChange={this.onChange} value={this.state.startdate} action={this.startDateChange} />
                 </form>
                 <form className={classes.container} noValidate>
-                  <EndDatePicker onChange={this.onChange} value={this.state.enddate} />
+                  <EndDatePicker onChange={this.onChange} value={this.state.enddate} action={this.endDateChange}/>
                 </form>
             </form>
             

@@ -17,11 +17,12 @@ class MaterialUIPickers extends React.Component {
   state = {
     // The first commit of Material-UI
     selectedDate: new Date(),
+    Day: "",
   };
 
   handleDateChange = date => {
     this.setState({ selectedDate: date });
-
+    this.props.action(date)
   };
 
   render() {
