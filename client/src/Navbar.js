@@ -24,7 +24,7 @@ const styles = {
 
 function ButtonAppBar(props) {
   const { classes, loggedIn, logout, role, fname, lname } = props;
-  let name = "Version 1.6"
+  let name = "Version 1.9"
 
   if(loggedIn === false) { //NOT LOGGED IN
     return (
