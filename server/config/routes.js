@@ -45,6 +45,7 @@ AdvisingRouter.get('/GetTime/:id', AdvisingController.getTimes, (err) => console
 AdvisingRouter.delete('/DeleteTime/:uniId', AdvisingController.deleteTimes, (err) => console.log("routers.js: AdvisingRouter error:", err));
 AdvisingRouter.get('/RegisteredAppointments/:_instructor_id', AdvisingController.GetAppointments, (err) => console.log("routers.js: AdvisingRouter error:", err));
 AdvisingRouter.get('/getStudentName/:_student_id', AdvisingController.GetStudentName, (err) => console.log("routers.js: AdvisingRouter error:", err));
+AdvisingRouter.post('/notifyStudent/:studentId', AdvisingController.notifyStudent, (err) => console.log("routers.js: AdvisingRouter error:", err));
 
 const StudentController = new (require('../app/Controllers/StudentController.js'))();
 const StudentRouter = require('koa-router')({
@@ -58,6 +59,8 @@ StudentRouter.post('/AddAppointment/:_uniId/:_student_id', StudentController.Add
 StudentRouter.delete('/DeleteAppointment/:_uniId/:_student_id', StudentController.DeleteAppointment, (err) => console.log("routers.js: StudentRouter error:", err));
 StudentRouter.get('/getProfessorName/:_student_id', StudentController.getProfessorName, (err) => console.log("routers.js: StudentRouter error:", err));
 StudentRouter.get('/getAppointmentHistory/:_student_id', StudentController.getAppointmentHistory, (err) => console.log("routers.js: StudentRouter error:", err));
+StudentRouter.get('/getNotifications/:user_id', StudentController.getNotifications, (err) => console.log("routers.js: StudentRouter error:", err));
+StudentRouter.post('/deleteNotifications/:studentId', StudentController.deleteNotifications, (err) => console.log("routers.js: StudentRouter error:", err));
 
 /**
  * Register all of the controllers into the default controller.

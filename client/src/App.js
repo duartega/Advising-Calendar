@@ -7,12 +7,28 @@ import Login from './Login';
 import Navbar from './Navbar';
 import EditSchedule from './EditSchedule';
 import AdvisingTimes from './AdvisingTimes';
-import Appointments from './Appointments';
-import StudentAppointments from './StudentAppointments';
+import Appointments from './Appointments'
+import StudentAppointments from './StudentAppointments'
+
 import {
   Route
 } from 'react-router-dom';
 document.title = 'Advising Calendar'; // Tab Title
+
+function checkNotifications(userId){
+  axios.get(`/Student/getNotifications/${userId}`).then(result => {
+    const userInfo = result.data;
+    console.log(userInfo)
+    if (userInfo['status'] === 'OK') {
+      console.log(userId)
+      console.log(userInfo)
+      if(userInfo['user']['notify'] == 1) {
+        alert("An Advisor has removed one of your Appointments!")
+        axios.post(`/Student/deleteNotifications/${userId}`)
+      }
+    }
+  })
+}
 
 class App extends Component {
   constructor(props) {
@@ -25,6 +41,7 @@ class App extends Component {
       password: '',
       info: [],
       instructor_id: null,
+      alert: false
     };
     this.handleUserChange = this.handleUserChange.bind(this);
     this.handlePassChange = this.handlePassChange.bind(this);
@@ -55,6 +72,7 @@ class App extends Component {
       instructor_id: null,
       fname: '',
       lname: '',
+      alert: false
     })
     //window.location.replace("/"); //NOT THE BEST, BUT IT WORKS...
   }
@@ -123,6 +141,7 @@ class App extends Component {
         else if (this.state.role === 0 && this.state.loggedIn === true) { //STUDENT
           return ( 
             <div >
+              {checkNotifications(this.state.id)}
               {console.log("Here is the state: ", this.state)}
               <Navbar loggedIn = {this.state.loggedIn} logout = {this.handleLogout} 
               role = {this.state.role} 
@@ -157,7 +176,7 @@ class App extends Component {
               <Route exact path = "/UserList"
               render = {(props) => <UserList />}/>
               <Route exact path = "/Appointments"
-              render = {(props) => <Appointments id= {this.state.id} />}/>
+              render = {(props) => <Appointments id = {this.state.id} />}/>
               </div >
               );
             }

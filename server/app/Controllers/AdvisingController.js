@@ -115,6 +115,30 @@ class AdvisingController {
                 return resolve();
             });
         }).catch(err => console.log("Database connection error.", err));
+    }
+
+    async notifyStudent(ctx) {
+        return new Promise((resolve, reject) => {
+        let query = "UPDATE cs386_jsmith.users SET notify = 1 WHERE id = ?";
+	    console.log('About to run this query.', query);
+            dbConnection.query(
+                {
+                    sql: query,
+                    values: [ctx.params.studentId]
+                }, (error) => {
+                    if (error) {
+                        return reject(error);
+                    }
+                }
+                
+            )
+        }).catch(err => {
+            ctx.body = {
+                status: "Failed",
+                error: err,
+                user: null
+            };
+        });
 
     }
 
