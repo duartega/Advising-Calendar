@@ -7,7 +7,8 @@ import Login from './Login';
 import Navbar from './Navbar';
 import EditSchedule from './EditSchedule';
 import AdvisingTimes from './AdvisingTimes';
-import Appointments from './Appointments'
+import Appointments from './Appointments';
+import StudentAppointments from './StudentAppointments';
 import {
   Route
 } from 'react-router-dom';
@@ -59,6 +60,9 @@ class App extends Component {
   }
 
   handleSubmit(event) {
+
+  axios.get("/login/updateLock");
+
     event.preventDefault();
     const user = this.state.username;
     const pass = this.state.password;
@@ -127,7 +131,7 @@ class App extends Component {
               /> {} 
               <Route exact path = "/Login" />
               <Route exact path = "/Appointments" 
-              render = {(props) => <Appointments id = {this.state.id} instructor_id = {this.state.instructor_id} />}
+              render = {(props) => <StudentAppointments id = {this.state.id} instructor_id = {this.state.instructor_id} />}
               />
 
             <Route exact path = "/AdvisingTimes"

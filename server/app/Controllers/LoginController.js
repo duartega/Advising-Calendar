@@ -38,6 +38,29 @@ class LoginController {
 
     }
 
+    async updateLock(ctx) {
+        return new Promise((resolve, reject) => {
+        let query = "update AdvisingTimes set isLocked = 1 where startDate < DATE_SUB(NOW(), INTERVAL -1 DAY) and NOW();";
+            dbConnection.query(
+                {
+                    sql: query,
+                }, (error) => {
+                    if (error) {
+                        return reject(error);
+                    }
+                }
+                
+            )
+        }).catch(err => {
+            ctx.body = {
+                status: "Failed",
+                error: err,
+                user: null
+            };
+        });
+
+    }
+
 }
 
 module.exports = LoginController;
