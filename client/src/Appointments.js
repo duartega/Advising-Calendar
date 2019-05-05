@@ -151,7 +151,7 @@ let EnhancedTableToolbar = props => {
     let values = Selected;
     for(let i = 0; i < values.length; i++) {
       console.log(values[i]);
-      axios.delete(`/Advising/DeleteTime/${values[i]}`);
+      axios.delete(`/Advising/UpdateTime/${values[i]}`);
       axios.post(`Advising/notifyStudent/${another_id[i]}`);
     }
     //alert("item/s deleted!")

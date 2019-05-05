@@ -9,7 +9,12 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import EditTable from './EditTable';
 import axios from './ConfigAxios';
+import StartDatePicker from './StartDatePicker';
+import EndDatePicker from './EndDatePicker';
+import { getDay } from 'date-fns/esm';
+import DateFnsUtils from '@date-io/date-fns';
 
+const days = {0: "Sunday", 1: "Monday", 2: "Tuesday", 3: "Wednesday", 4: "Thursday", 5: "Friday", 6: "Saturday"}
 
 const styles = theme => ({
     root: {
@@ -38,11 +43,16 @@ const styles = theme => ({
         day: '',
         start: '07:30',
         end: '09:30',
+        startdate: new Date(),
+        enddate: '',
         labelWidth: 0,
+        WDay: '',
       };
+
       this.handleSubmit = this.handleSubmit.bind(this);
       this.handleStartChange = this.handleStartChange.bind(this);
       this.handleEndChange = this.handleEndChange.bind(this);
+      this.dayChange = this.dayChange.bind(this);
     }
     
     handleSubmit(props) {
@@ -87,7 +97,7 @@ const styles = theme => ({
         }
       }
       let idValue = id;
-      let dayValue = findKeyValue(this.state.day);
+      let dayValue = this.state.day;
       let startValue = this.state.start;
       let endValue = this.state.end;
       let timeValue = timeList(startValue, endValue)
@@ -105,18 +115,26 @@ const styles = theme => ({
       }
     }
 
-    handleStartChange(event) {
+    handleStartChange = event => 
       this.setState({start: event.target.value});
-    }
 
-    handleEndChange(event) {
+
+    handleEndChange = event =>
       this.setState({end: event.target.value});
-    }
+    
   
-    handleChange = event => {
+    handleChange = event => 
       this.setState({ [event.target.name]: event.target.value });
-    };
-  
+    
+
+    onChange = date => this.setState({ date })
+
+    dayChange = event => {
+      var d = getDay(new Date(event)); // Get the day of the week
+      console.log("THIS WORKS: ", days[d])
+      this.setState({day: days[d]})
+      // console.log("EVENT: ", event);
+    }
     render() {
       const { classes, id } = this.props;
   
@@ -128,7 +146,7 @@ const styles = theme => ({
             <br></br>
             <br></br>
             <form className={classes.root} autoComplete="off">
-            <FormControl className={classes.formControl}>
+            {/* <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="day-simple">Day</InputLabel>
                 <Select
                 value={this.state.day}
@@ -149,7 +167,7 @@ const styles = theme => ({
                 <MenuItem value={60}>Saturday</MenuItem>
                 <MenuItem value={70}>Sunday</MenuItem>
                 </Select>
-            </FormControl>
+            </FormControl> */}
             <form className={classes.container} noValidate>
             <TextField onChange={this.handleStartChange}
                 id="time"
@@ -178,9 +196,16 @@ const styles = theme => ({
                 inputProps={{
                 step: 300, // 5 min
                 }}
-                />
+                /> 
                 </form>
-              
+
+                <form className={classes.container} noValidate>
+                {/* render = {(props) => <EditSchedule id = {this.state.id} */}
+                  <StartDatePicker onChange={this.onChange} value={this.state.startdate} action={this.dayChange} />
+                </form>
+                <form className={classes.container} noValidate>
+                  <EndDatePicker onChange={this.onChange} value={this.state.enddate} />
+                </form>
             </form>
             
             <br></br>
