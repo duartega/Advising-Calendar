@@ -11,3 +11,6 @@
 /server/node_modules
 /server/server.js
 /server/server.js~
+
+*ConfigAxios.js
+*server.js

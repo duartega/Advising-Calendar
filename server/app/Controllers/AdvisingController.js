@@ -5,12 +5,12 @@ require('dotenv').config();
 class AdvisingController {
     async addTimes(ctx) {
         return new Promise((resolve, reject) => {
-        let query = "INSERT INTO AdvisingTimes (id, Day, StartTime, EndTime, TimeBlock) VALUES (?, ?, ?, ?, ?);";
+        let query = "INSERT INTO AdvisingTimes (id, Day, StartTime, EndTime, TimeBlock, startDate, endDate) VALUES (?, ?, ?, ?, ?, ?, ?);";
 	    console.log('About to run this query.', query);
             dbConnection.query(
                 {
                     sql: query,
-                    values: [ctx.params.id, ctx.params.day, ctx.params.starttime, ctx.params.endtime, ctx.params.timeblock]
+                    values: [ctx.params.id, ctx.params.day, ctx.params.starttime, ctx.params.endtime, ctx.params.timeblock, ctx.params.startdate, ctx.params.enddate]
                 }, (error) => {
                     if (error) {
                         return reject(error);
@@ -52,6 +52,29 @@ class AdvisingController {
     }
 
     async deleteTimes(ctx) {
+        return new Promise((resolve, reject) => {
+        let query = "Delete from AdvisingTimes where uniId = ?";
+	    console.log('About to run this query.', query);
+        console.log('ctx.params.uniId is', ctx.params.uniId);
+        dbConnection.query(
+            {
+                sql: query,
+                values: [ctx.params.uniId]
+            }, (error, tuples) => {
+                if (error) {
+                    ctx.body = [];
+                    ctx.status = 200;
+                    return reject(error);
+                }
+                ctx.body = tuples;
+                ctx.status = 200;
+                return resolve();
+            });
+        }).catch(err => console.log("Database connection error.", err));
+
+    }
+
+    async UpdateTime(ctx) {
         return new Promise((resolve, reject) => {
         let query = "UPDATE AdvisingTimes set Student_ID_Registered = NULL where uniId = ?";
 	    console.log('About to run this query.', query);
