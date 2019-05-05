@@ -9,6 +9,7 @@ import EditSchedule from './EditSchedule';
 import AdvisingTimes from './AdvisingTimes';
 import Appointments from './Appointments'
 import StudentAppointments from './StudentAppointments'
+
 import {
   Route
 } from 'react-router-dom';
@@ -77,6 +78,9 @@ class App extends Component {
   }
 
   handleSubmit(event) {
+
+  axios.get("/login/updateLock");
+
     event.preventDefault();
     const user = this.state.username;
     const pass = this.state.password;

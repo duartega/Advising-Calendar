@@ -53,7 +53,7 @@ class AdvisingController {
 
     async deleteTimes(ctx) {
         return new Promise((resolve, reject) => {
-        let query = "DELETE FROM AdvisingTimes WHERE uniId = ?";
+        let query = "UPDATE AdvisingTimes set Student_ID_Registered = NULL where uniId = ?";
 	    console.log('About to run this query.', query);
         console.log('ctx.params.uniId is', ctx.params.uniId);
         dbConnection.query(

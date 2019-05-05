@@ -2,15 +2,9 @@ use cs386_jsmith;
 
 show tables;
 
-select * from cs386_sanitized_advisors;
-select * from cs386_students;
-
-
 select * from Appointments;
 select * from AdvisingTimes;
 desc AdvisingTimes;
-
-select * from AdvisingSlots;
 
 select * from users;
 
@@ -32,24 +26,11 @@ select * from students;
 select u.fname, u.lname from users as u
 join students as s on s.instructor_id = u.id
 where s.user_id = 5;
-
   
 ----------------------------------------------------------------------------------------------------------
   
   SELECT * FROM AdvisingTimes WHERE id = 1;
-  insert into AdvisingSlots values (7, 129, 3, "Friday", "8:30", "8:50", "20", null, "2017-07-04");
-  select * from AdvisingSlots;
-  
--- Get students registered appointments
-select a. uniId, a.Day, a.StartTime, a.EndTime, a.TimeBlock from AdvisingSlots as a
-join students as s on a.advisorId = s.instructor_id
-where s.user_id = 5 and a.Student_ID_Registered = 5;
-  
--- Get available appointment slots for the student from their advisor
-select a. uniId, a.Day, a.StartTime, a.EndTime, a.TimeBlock from AdvisingSlots as a
-join students as s on a.advisorId = s.instructor_id
-where s.user_id = 5 and a.Student_ID_Registered is NULL;
-
+  insert into AdvisingTimes values (128, 1, "Thursday", "7:30", "7:50", "20", 1);
   
   UPDATE AdvisingTimes set Student_ID_Registered = 5 where uniId = 128;
   
@@ -63,30 +44,28 @@ where s.user_id = 5 and a.Student_ID_Registered is NULL;
 select * from AdvisingTimes;
 select * from Appointments;
 
-call updateAdvisingTimesWithStudentID(128, 5);
+call updateAdvisingTimesWithStudentIDupdateAdvisingTimesWithStudentID(128, 5);
 call deleteStudentIDFromAdvisingTimes(128, 5);
 call getUnfilledAppointementSlots(5);
-call getRegisteredAppointments(1);
 
 drop procedure updateAdvisingTimesWithStudentID;
 drop procedure deleteStudentIDFromAdvisingTimes;
 drop procedure getUnfilledAppointementSlots;
   
 ----------------------------------------------------------------------------------------------------------  
-  
+  select * from AdvisingTimes;
+select * from AdvisingSlots;
+select * from Appointments;
+SET SQL_SAFE_UPDATES = 0;
+		UPDATE AdvisingSlots set Student_ID_Registered = 5 where timeId = 128;
   Delimiter //
   create procedure updateAdvisingTimesWithStudentID(_uniId int, _student_id int)
   begin
-		UPDATE AdvisingTimes set Student_ID_Registered = _student_id where uniId = _uniId;
+		UPDATE AdvisingSlots set Student_ID_Registered = _student_id where timeId = _uniId;
         
 end //
 delimiter ;
-select * from AdvisingTimes;
-UPDATE AdvisingSlots set Student_ID_Registered = _student_id where timeId = _uniId;
 
-select * from users;
-select * from Appointments;
-show tables;
 ----------------------------------------------------------------------------------------------------------
 
 -- This will delete the advising appointment that the student booked then
@@ -98,21 +77,29 @@ show tables;
         Delete from Appointments where uniId = _uniId and id = _student_id;
 end //
 delimiter ;
-select * from Appointments where id = 5;
+
 ----------------------------------------------------------------------------------------------------------
 
 -- Get all the unfilled advising appointment slots for student view
-Delimiter //
-create procedure getRegisteredAppointments(_instructor_id int)
-begin
-		-- Get registered appointment slots for the logged in advisor
-		select * from AdvisingTimes where id = _instructor_id and Student_ID_Registered is not NULL;
-
+  Delimiter //
+  create procedure getUnfilledAppointementSlots(_student_id int)
+  begin
+		        select a. uniId, a.Day, a.StartTime, a.EndTime, a.TimeBlock from AdvisingTimes as a
+			join students as s on a.id = s.instructor_id
+			where s.user_id = _student_id and a.Student_ID_Registered is NULL;
 end //
 delimiter ;
 
-select * from students;
 ----------------------------------------------------------------------------------------------------------
+
+  Delimiter //
+  create procedure getUnfilledAppointementSlots(_StartTime time)
+  begin
+		        select a. uniId, a.Day, a.StartTime, a.EndTime, a.TimeBlock from AdvisingTimes as a
+			join students as s on a.id = s.instructor_id
+			where s.user_id = _student_id and a.Student_ID_Registered is NULL;
+end //
+delimiter ;
 
 ----------------------------------------------------------------------------------------------------------
 
@@ -148,45 +135,32 @@ delimiter ;
 
 call appointmentHistory(5);
 drop procedure appointmentHistory;
-select * from AdvisingTimes;
-
-select * from users;
-
-select fname, lname from users where id = 5;
-
-create table la (t datetime, locked bool);
-drop table la;
-insert into la values ("2019-05-04 15:30:59", 0);
-insert into la values ("2019-11-11 13:13:13", 0);
-insert into la values ("2020-11-11 13:13:13", 0);
-
-
-select t, locked IF(t>SYSDATE()) from la
-set locked = 1;
-
-select sysdate();
-select t as "sysdate()" from la;
-select * from la;
-
-
-
-
-select count(t) from la where t < sysdate();
 
 SET SQL_SAFE_UPDATES=0;
+
+create table test (t int);
+drop event lockAppointments;
+
+CREATE EVENT lockAppointments
+ON SCHEDULE EVERY 1 SECOND
+STARTS CURRENT_TIMESTAMP
+DO
+	update la set locked=1 where t < sysdate();
+    
+update la set locked=1 where t BETWEEN DATE_SUB(NOW(), INTERVAL -1 DAY) and NOW();
+update AdvisingTimes set isLocked = 1 where startDate < DATE_SUB(NOW(), INTERVAL -1 DAY) and NOW();
+select * from AdvisingTimes;
+
+select DATE_SUB(NOW(), INTERVAL -1 DAY);
 select * from la;
+drop table la;
 
+select NOW();
+select * from AdvisingTimes;
 
-
-
-DELIMITER $$ 
-CREATE PROCEDURE lockAppointment()
-BEGIN
-		update la set locked=1 where t < sysdate();
-END$$
-
-call lockAppointment();
-drop procedure lockAppointment;
-
-
-
+ALTER table AdvisingTimes Add islocked bool;
+insert into la values ("2019-05-05 19:56:30", 0);
+create table la (t datetime, locked bool);
+----------------------------------------------------------------------------------------------------------
+select * from Notify;
+delete from Notify where userId = 5;

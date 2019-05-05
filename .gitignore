@@ -4,9 +4,10 @@
 /client/.env~
 /client/src/.env
 /client/src/.env~
-/client/src/ConfixAxios.js
+/client/src/ConfigAxios.js
 /client.DS_Store
 .DS_Store
 
 /server/node_modules
 /server/server.js
+/server/server.js~
