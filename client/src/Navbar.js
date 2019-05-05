@@ -8,6 +8,9 @@ import Button from '@material-ui/core/Button';
 import {Link} from 'react-router-dom';
 import './App.css';
 import AdvisorLongMenu from './AdvisorLongMenu';
+import InputBase from '@material-ui/core/InputBase';
+import SearchIcon from '@material-ui/icons/Search';
+import Search from './Search';
 
 const styles = {
   root: {
@@ -68,6 +71,9 @@ function ButtonAppBar(props) {
             <Typography variant="h6" color="inherit" className={classes.grow}>
               {name}
             </Typography>
+
+            <Search/>
+
             <Button color="inherit"><Link className="App-link" to="/UserList">User List</Link></Button>
             &nbsp;
             <Button color="inherit"><Link className="App-link" to="/Appointments">Appointments</Link></Button>
