@@ -186,6 +186,27 @@ class AdvisingController {
 
     }
 
+    async GetStudentInfo(ctx) {
+        return new Promise((resolve, reject) => {
+        let query = "SELECT id, user, fname, lname FROM users WHERE role = 0 and fname = ?;";
+	    console.log('About to run this query.', query);
+        dbConnection.query(
+            {
+                sql: query,
+                values: [ctx.params.fname]
+            }, (error, tuples) => {
+                if (error) {
+                    ctx.body = [];
+                    ctx.status = 200;
+                    return reject(error);
+                }
+                ctx.body = tuples;
+                ctx.status = 200;
+                return resolve();
+            });
+        }).catch(err => console.log("Database connection error.", err));
+
+    }
 
 }
 

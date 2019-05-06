@@ -71,9 +71,8 @@ function ButtonAppBar(props) {
             <Typography variant="h6" color="inherit" className={classes.grow}>
               {name}
             </Typography>
-
             <Search/>
-
+            &nbsp;
             <Button color="inherit"><Link className="App-link" to="/UserList">User List</Link></Button>
             &nbsp;
             <Button color="inherit"><Link className="App-link" to="/Appointments">Appointments</Link></Button>

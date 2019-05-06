@@ -48,6 +48,7 @@ AdvisingRouter.get('/RegisteredAppointments/:_instructor_id', AdvisingController
 AdvisingRouter.get('/getStudentName/:_student_id', AdvisingController.GetStudentName, (err) => console.log("routers.js: AdvisingRouter error:", err));
 AdvisingRouter.post('/notifyStudent/:studentId', AdvisingController.notifyStudent, (err) => console.log("routers.js: AdvisingRouter error:", err));
 AdvisingRouter.get('/GetAllUsers', AdvisingController.getAllUsers, (err) => console.log("routers.js: AdvisingRouter error:", err));
+AdvisingRouter.get('/GetStudentInfo/:fname', AdvisingController.GetStudentInfo, (err) => console.log("routers.js: AdvisingRouter error:", err));
 
 const StudentController = new (require('../app/Controllers/StudentController.js'))();
 const StudentRouter = require('koa-router')({

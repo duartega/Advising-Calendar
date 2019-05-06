@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+  Component
+} from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -9,10 +11,12 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
+import axios from './ConfigAxios';
+import UserPop from './UserPop';
 
 const styles = theme => ({
   root: {
-    width: '10%',
+    width: '20%',
   },
   grow: {
     flexGrow: 1,
@@ -62,32 +66,69 @@ const styles = theme => ({
   },
 });
 
-function SearchAppBar(props) {
-  const { classes } = props;
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-         
-          <div className={classes.grow} />
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+class Search extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchValue: 'null',
+      result: undefined
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleEnter = this.handleEnter.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({
+      searchValue: event.target.value,
+      value: true
+    });
+  }
+
+  handleEnter(name) {
+    axios.get(`/Advising/GetStudentInfo/${name}`).then(result => {
+      const userInfo = result.data;
+      if (result['statusText'] === 'OK') {
+        console.log(userInfo[0])
+        this.setState({
+          result: userInfo[0]
+        });
+      }
+    })
+  }
+
+  render() {
+    const { classes } = this.props;
+    return (
+      <div className={classes.root}>
+        <AppBar position="static">
+          <UserPop user={this.state.result} value={this.state.value}/>
+            <div className={classes.grow} />
+            <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <InputBase
+                onChange={(e) => this.handleChange(e)}
+                onKeyPress={event => {
+                  if (event.key === 'Enter') {
+                    this.handleEnter(this.state.searchValue)
+                  }
+                }}
+                placeholder="Search…"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+              />
             </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-            />
-          </div>
-      </AppBar>
-    </div>
-  );
+        </AppBar>
+      </div>
+    );
+  }
 }
 
-SearchAppBar.propTypes = {
+Search.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SearchAppBar);
+export default withStyles(styles)(Search);
