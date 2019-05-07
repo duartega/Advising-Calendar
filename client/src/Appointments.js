@@ -16,11 +16,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
-import AddIcon from '@material-ui/icons/Add';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
 import axios from './ConfigAxios';
-import Button from '@material-ui/core/Button';
-import green from '@material-ui/core/colors/green';
 import red from '@material-ui/core/colors/red';
 document.title = 'My Appointments'; // Tab Title
 
@@ -144,7 +140,7 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-  const { Selected, numSelected, classes, updateSelected, update, student_id, another_id } = props;
+  const { Selected, numSelected, classes, updateSelected, another_id } = props;
  //https://material-ui.com/demos/dialogs/ this will give us a confirmation dialog
   function deleteRow() {
 
@@ -237,7 +233,7 @@ class EnhancedTable extends React.Component {
 
   // This is the function to pull the data again when the user clicks the refresh button
   update = (props) => {
-    const { id, instructor_id } = this.props;
+    const { id } = this.props;
     let array = [];
     // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
     axios.get(`/Student/getStudentAppointements/${id}`).then(result => {
@@ -253,7 +249,7 @@ class EnhancedTable extends React.Component {
   }
 
   async componentDidMount() {
-    const { id, instructor_id } = this.props;
+    const { id } = this.props;
     let array = [];
     this.setState({student_id: id})
     let anotherArray = [];
@@ -349,7 +345,7 @@ class EnhancedTable extends React.Component {
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar numSelected={selected.length} Selected={selected} updateSelected={this.updateSelected} update={this.update} student_id={this.state.student_id} another_id={this.state.another_id}/>
+        <EnhancedTableToolbar numSelected={selected.length} Selected={selected} updateSelected={this.updateSelected} another_id={this.state.another_id}/>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead

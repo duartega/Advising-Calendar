@@ -3,16 +3,11 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import axios from './ConfigAxios';
-import UserPop from './UserPop';
 
 const styles = theme => ({
   root: {
@@ -87,11 +82,16 @@ class Search extends Component {
   handleEnter(name) {
     axios.get(`/Advising/GetStudentInfo/${name}`).then(result => {
       const userInfo = result.data;
-      if (result['statusText'] === 'OK') {
+      console.log(result['statusText'])
+      if (result['statusText'] === 'OK' && userInfo[0]!== undefined) {
         console.log(userInfo[0])
+        alert(` USERID: ${userInfo[0]['id']} || USER: ${userInfo[0]['user']} || FIRST NAME: ${userInfo[0]['fname']} || LAST NAME: ${userInfo[0]['lname']}`)
         this.setState({
           result: userInfo[0]
         });
+      }
+      else {
+        alert("No Student Found!")
       }
     })
   }
@@ -101,7 +101,6 @@ class Search extends Component {
     return (
       <div className={classes.root}>
         <AppBar position="static">
-          <UserPop user={this.state.result} value={this.state.value}/>
             <div className={classes.grow} />
             <div className={classes.search}>
               <div className={classes.searchIcon}>

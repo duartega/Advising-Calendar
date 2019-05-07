@@ -1,6 +1,4 @@
-import React, {
-  Component
-} from 'react';
+import React from 'react';
 import UserList from './UserList';
 import axios from './ConfigAxios';
 import Login from './Login';
@@ -22,7 +20,7 @@ function checkNotifications(userId){
     if (userInfo['status'] === 'OK') {
       console.log(userId)
       console.log(userInfo)
-      if(userInfo['user']['notify'] == 1) {
+      if(userInfo['user']['notify'] === 1) {
         alert("An Advisor has removed one of your Appointments!")
         axios.post(`/Student/deleteNotifications/${userId}`)
       }
@@ -85,13 +83,13 @@ class App extends React.Component {
     const user = this.state.username;
     const pass = this.state.password;
     if (user && pass !== '') {
-      const myData = {
-        first: user,
-        pass: pass
-      }
 
       axios.get(`/login/${user}/${pass}`).then(LoginResult => {
-        if (LoginResult.data['user']['role'] === 0) {
+        console.log(LoginResult.data)
+        if (LoginResult.data['status'] === "Failed"){
+          alert("Incorrect Username or Password, Try Again!")
+        }
+        else if (LoginResult.data['user']['role'] === 0) {
           axios.get(`/Student/getAdvisorID/${LoginResult.data['user']['id']}`).then(IDResult => {
             const userInfo = LoginResult.data;
             const insID = IDResult.data;

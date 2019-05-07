@@ -1,21 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import EditTable from './EditTable';
 import axios from './ConfigAxios';
 import StartDatePicker from './StartDatePicker';
 import EndDatePicker from './EndDatePicker';
-import { getDay, format, parse, getDate, getYear, getMonth } from 'date-fns/esm';
-import DateFnsUtils from '@date-io/date-fns';
+import { getDay, /*format, parse,*/ getDate, getYear, getMonth } from 'date-fns/esm';
 
 const days = {0: "Sunday", 1: "Monday", 2: "Tuesday", 3: "Wednesday", 4: "Thursday", 5: "Friday", 6: "Saturday"}
-const months = {0: "January"}
+//const months = {0: "January"}
 
 const styles = theme => ({
     root: {
@@ -61,8 +56,8 @@ const styles = theme => ({
       const { id } = this.props;
 
       function timeList(startVal, endVal) {
-        let startArray = []
-        let endArray = []
+        /*let startArray = []
+        let endArray = []*/
 
         var start = startVal;
         var startArr = start.split(":");
@@ -71,7 +66,7 @@ const styles = theme => ({
 
         var hourDiff = Math.abs(finishArr[0] - startArr[0]);
         var minDiff = Math.floor((Math.abs(finishArr[1] - startArr[1]) / 59)*100);
-        if (minDiff.toString().length == 1) 
+        if (minDiff.toString().length === 1) 
             minDiff = '0' + minDiff;
 
         var output = hourDiff + "." + minDiff;
@@ -81,7 +76,7 @@ const styles = theme => ({
 
       }
 
-      function findKeyValue(key) {
+      /*function findKeyValue(key) {
         let map = [
         {key: 10, value: "Monday"},
         {key: 20, value: "Tuesday"},
@@ -97,7 +92,7 @@ const styles = theme => ({
             return map[i]["value"]
           }
         }
-      }
+      }*/
       let idValue = id;
       let dayValue = this.state.day;
       let startValue = this.state.start;
@@ -110,7 +105,7 @@ const styles = theme => ({
         timeValue === undefined || timeValue === "") {
           alert("Error, Please make sure all values are filled!")
       }
-      else if(timeValue == "null") {
+      else if(timeValue === "null") {
         alert("Error, start time cannot be greater than end time")
       }
       else {

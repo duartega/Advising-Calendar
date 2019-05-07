@@ -7,9 +7,6 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import {Link} from 'react-router-dom';
 import './App.css';
-import AdvisorLongMenu from './AdvisorLongMenu';
-import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
 import Search from './Search';
 
 const styles = {
@@ -27,7 +24,7 @@ const styles = {
 
 function ButtonAppBar(props) {
   const { classes, loggedIn, logout, role, fname, lname } = props;
-  let name = "Version 1.9"
+  let name = "Version 1.9 (Before Alpha)"
 
   if(loggedIn === false) { //NOT LOGGED IN
     return (
