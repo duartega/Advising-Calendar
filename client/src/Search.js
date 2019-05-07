@@ -11,7 +11,7 @@ import axios from './ConfigAxios';
 
 const styles = theme => ({
   root: {
-    width: '20%',
+    width: '40%',
   },
   grow: {
     flexGrow: 1,

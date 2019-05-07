@@ -8,6 +8,8 @@ import Button from '@material-ui/core/Button';
 import {Link} from 'react-router-dom';
 import './App.css';
 import Search from './Search';
+import AdvisorLongMenu from './AdvisorLongMenu';
+import StudentLongMenu from './StudentLongMenu';
 
 const styles = {
   root: {
@@ -49,11 +51,9 @@ function ButtonAppBar(props) {
             <Typography variant="h6" color="inherit" className={classes.grow}>
               {name}
             </Typography>
-            <Button color="inherit"><Link className="App-link" to="/AdvisingTimes">Find Advising Times</Link></Button>
-            &nbsp;
-            <Button color="inherit"><Link className="App-link" to="/Appointments">My Appointments</Link></Button>
-            &nbsp;
             <Button onClick={logout} color="inherit">Logout</Button>
+            &nbsp;
+            <StudentLongMenu/>
           </Toolbar>
         </AppBar>
       </div>
@@ -70,13 +70,11 @@ function ButtonAppBar(props) {
             </Typography>
             <Search/>
             &nbsp;
-            <Button color="inherit"><Link className="App-link" to="/UserList">User List</Link></Button>
             &nbsp;
-            <Button color="inherit"><Link className="App-link" to="/Appointments">Appointments</Link></Button>
-            &nbsp;
-            <Button color="inherit"><Link className="App-link" to="/EditSchedule">Edit Schedule</Link></Button>
             &nbsp;
             <Button onClick={logout} color="inherit">Logout</Button>
+            &nbsp;
+            <AdvisorLongMenu/>
           </Toolbar>
         </AppBar>
       </div>
