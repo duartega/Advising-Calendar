@@ -93,6 +93,7 @@ const styles = theme => ({
           }
         }
       }*/
+
       let idValue = id;
       let dayValue = this.state.day;
       let startValue = this.state.start;
@@ -110,6 +111,7 @@ const styles = theme => ({
       }
       else {
         alert("Advising Time has been added!")
+        // id, Day, StartTime, EndTime, TimeBlock, startDate, endDate, islocked, takenPlace, oldAppointment, repeating
         axios.post(`/Advising/AddTime/${idValue}/${dayValue}/${startValue}/${endValue}/${timeValue}/${startDate}/${endDate}`)
       }
     }
@@ -135,10 +137,7 @@ const styles = theme => ({
       var year = getYear(new Date(event));
 
       var mushed = year + "-" + (month+1) + "-" + day
-      console.log("Mushed together: ", mushed)
-      console.log("Weekday: ", days[weekday], " and day: ", day, " and month: ", month, " and year: ", year)
       this.setState({day: days[weekday], startdate: mushed})
-      // console.log("EVENT: ", event);
     }
 
     endDateChange = event => {
@@ -148,10 +147,7 @@ const styles = theme => ({
       var year = getYear(new Date(event));
 
       var mushed = year + "-" + (month+1) + "-" + day
-      console.log("Mushed together: ", mushed)
-      console.log("Weekday: ", days[weekday], " and day: ", day, " and month: ", month, " and year: ", year)
       this.setState({enddate: mushed})
-      // console.log("EVENT: ", event);
     }
 
     render() {

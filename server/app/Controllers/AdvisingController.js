@@ -4,6 +4,7 @@ require('dotenv').config();
 
 class AdvisingController {
     async addTimes(ctx) {
+        console.log("THIS IS IN ADVISING CONTROLLER");
         return new Promise((resolve, reject) => {
         let query = "INSERT INTO AdvisingTimes (id, Day, StartTime, EndTime, TimeBlock, startDate, endDate) VALUES (?, ?, ?, ?, ?, ?, ?);";
 	    console.log('About to run this query.', query);
@@ -53,7 +54,7 @@ class AdvisingController {
 
     async getTimes(ctx) {
         return new Promise((resolve, reject) => {
-        let query = "SELECT * FROM AdvisingTimes WHERE id = ?";
+        let query = "select * from AdvisingTimes where startDate >= date(SYSDATE());";
 	    console.log('About to run this query.', query);
         console.log('ctx.params.id is', ctx.params.id);
         dbConnection.query(
@@ -95,6 +96,26 @@ class AdvisingController {
             });
         }).catch(err => console.log("Database connection error.", err));
 
+    }
+
+    async getAppointmentHistory(ctx) {
+        return new Promise((resolve, reject) => {
+        let query = "call advisorAppointmentHistory(?)";
+        dbConnection.query(
+            {
+                sql: query,
+                values: [ctx.params._instructor_id]
+            }, (error, tuples) => {
+                if (error) {
+                    ctx.body = [];
+                    ctx.status = 200;
+                    return reject(error);
+                }
+                ctx.body = tuples;
+                ctx.status = 200;
+                return resolve();
+            });
+        }).catch(err => console.log("Database connection error.", err));
     }
 
     async UpdateTime(ctx) {

@@ -181,7 +181,7 @@ class App extends React.Component {
               <Route exact path = "/Appointments"
               render = {(props) => <Appointments id = {this.state.id} />}/>
               <Route exact path = "/AdvisorHistory"
-              render = {(props) => <AdvisorHistory />}/>
+              render = {(props) => <AdvisorHistory id = {this.state.id} />}/>
               </div >
               );
             }

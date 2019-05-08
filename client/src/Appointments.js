@@ -21,8 +21,8 @@ import red from '@material-ui/core/colors/red';
 document.title = 'My Appointments'; // Tab Title
 
 
-function createData(id, day, starttime, endtime, timeblock, studentRegistered) {
-  return {id, day, starttime, endtime, timeblock, studentRegistered};
+function createData(id, day, date, starttime, endtime, timeblock, studentRegistered) {
+  return {id, day, date, starttime, endtime, timeblock, studentRegistered};
 }
 
 function desc(a, b, orderBy) {
@@ -51,6 +51,7 @@ function getSorting(order, orderBy) {
 
 const rows = [
   { id: 'day', numeric: false, disablePadding: false, label: 'Days' },
+  { id: 'date', numeric: false, disablePadding: false, label: 'Date' },
   { id: 'starttime', numeric: false, disablePadding: false, label: 'Start Times' },
   { id: 'endtime', numeric: false, disablePadding: false, label: 'End Times' },
   { id: 'timeblock', numeric: false, disablePadding: false, label: 'Time Blocks' },
@@ -145,7 +146,6 @@ let EnhancedTableToolbar = props => {
 
     let values = Selected;
     for(let i = 0; i < values.length; i++) {
-      console.log(values[i]);
       axios.delete(`/Advising/UpdateTime/${values[i]}`);
       axios.post(`Advising/notifyStudent/${another_id[i]}`);
     }
@@ -234,17 +234,27 @@ class EnhancedTable extends React.Component {
   update = (props) => {
     const { id } = this.props;
     let array = [];
-    // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
-    axios.get(`/Student/getStudentAppointements/${id}`).then(result => {
+    this.setState({student_id: id})
+    let anotherArray = [];
 
-      for(let i = 0; i < result.data.length; i++) {
-        array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], result.data[0][i]['StartTime'],
-          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock']))
+    // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
+    axios.get(`/Advising/RegisteredAppointments/${id}`).then(result => {
+      axios.get(`/Advising/getStudentName/${id}`).then(studentResult => {
+      for(let i = 0; i < result.data[0].length; i++) {
+        let d = result.data[0][i]['startDate'];
+        let date = d.split("-", 3)
+        let day = date[2].split("T")
+        let wholeDate = date[1] + "/" + day[0] + "/" + date[0]
+        array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], wholeDate, result.data[0][i]['StartTime'],
+          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock'], result.data[0][i]['Student_ID_Registered']))
+        anotherArray.push(result.data[0][i]['Student_ID_Registered'])
       }
       this.setState({
-        data: array
+        data: array,
+        another_id: anotherArray
       })
     })
+  })
   }
 
   async componentDidMount() {
@@ -256,10 +266,13 @@ class EnhancedTable extends React.Component {
     // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
     axios.get(`/Advising/RegisteredAppointments/${id}`).then(result => {
       axios.get(`/Advising/getStudentName/${id}`).then(studentResult => {
-      console.log("Student result data: ", studentResult.data);
-      console.log("Results from advising: ", result.data);
+        
       for(let i = 0; i < result.data[0].length; i++) {
-        array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], result.data[0][i]['StartTime'],
+        let d = result.data[0][i]['startDate'];
+        let date = d.split("-", 3)
+        let day = date[2].split("T")
+        let wholeDate = date[1] + "/" + day[0] + "/" + date[0]
+        array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], wholeDate, result.data[0][i]['StartTime'],
           result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock'], result.data[0][i]['Student_ID_Registered']))
         anotherArray.push(result.data[0][i]['Student_ID_Registered'])
       }
@@ -376,6 +389,7 @@ class EnhancedTable extends React.Component {
                       <TableCell component="th" scope="row" padding="none"> 
                         {n.day}
                       </TableCell>
+                      <TableCell align="left">{n.date}</TableCell>
                       <TableCell align="left">{n.starttime}</TableCell>
                       <TableCell align="left">{n.endtime}</TableCell>
                       <TableCell align="left">{n.timeblock}</TableCell>

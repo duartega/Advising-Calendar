@@ -10,6 +10,7 @@ import './App.css';
 import Search from './Search';
 import AdvisorLongMenu from './AdvisorLongMenu';
 import StudentLongMenu from './StudentLongMenu';
+import History from './StudentHistory';
 
 const styles = {
   root: {
@@ -26,7 +27,7 @@ const styles = {
 
 function ButtonAppBar(props) {
   const { classes, loggedIn, logout, role, fname, lname } = props;
-  let name = "Version 1.9 (Before Alpha)"
+  let name = "Version 1.9.1"
 
   if(loggedIn === false) { //NOT LOGGED IN
     return (

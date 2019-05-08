@@ -20,8 +20,8 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import axios from './ConfigAxios';
 import Button from '@material-ui/core/Button';
 
-function createData(id, day, starttime, endtime, timeblock) {
-  return {id, day, starttime, endtime, timeblock};
+function createData(id, day, date, starttime, endtime, timeblock) {
+  return {id, day, date, starttime, endtime, timeblock};
 }
 
 function desc(a, b, orderBy) {
@@ -50,6 +50,7 @@ function getSorting(order, orderBy) {
 
 const rows = [
   { id: 'day', numeric: false, disablePadding: false, label: 'Days' },
+  { id: 'date', numeric: false, disablePadding: false, label: 'Date' },
   { id: 'starttime', numeric: false, disablePadding: false, label: 'Start Times' },
   { id: 'endtime', numeric: false, disablePadding: false, label: 'End Times' },
   { id: 'timeblock', numeric: false, disablePadding: false, label: 'Time Blocks' },
@@ -144,10 +145,8 @@ let EnhancedTableToolbar = props => {
   function deleteRow() {
     let values = Selected;
     for(let i = 0; i < values.length; i++) {
-      console.log(values[i]);
       axios.delete(`/Advising/DeleteTime/${values[i]}`);
     }
-    //alert("item/s deleted!")
     updateSelected(values);
   }
 
@@ -223,11 +222,11 @@ class EnhancedTable extends React.Component {
     let array = [];
     axios.get(`/Advising/GetTime/${id}`).then(result => {
       for(let i = 0; i < result.data.length; i++) {
-        /*console.log(result.data[i]['Day'])
-        console.log(result.data[i]['StartTime'])
-        console.log(result.data[i]['EndTime'])
-        console.log(result.data[i]['TimeBlock'])*/
-        array.push(createData(result.data[i]['uniId'], result.data[i]['Day'], result.data[i]['StartTime'],
+        let d = result.data[i]['startDate'];
+        let date = d.split("-", 3)
+        let day = date[2].split("T")
+        let wholeDate = date[1] + "/" + day[0] + "/" + date[0]
+        array.push(createData(result.data[i]['uniId'], result.data[i]['Day'], wholeDate, result.data[i]['StartTime'],
           result.data[i]['EndTime'], result.data[i]['TimeBlock']))
         
       }
@@ -242,11 +241,11 @@ class EnhancedTable extends React.Component {
     let array = [];
     axios.get(`/Advising/GetTime/${id}`).then(result => {
       for(let i = 0; i < result.data.length; i++) {
-        /*console.log(result.data[i]['Day'])
-        console.log(result.data[i]['StartTime'])
-        console.log(result.data[i]['EndTime'])
-        console.log(result.data[i]['TimeBlock'])*/
-        array.push(createData(result.data[i]['uniId'], result.data[i]['Day'], result.data[i]['StartTime'],
+        let d = result.data[i]['startDate'];
+        let date = d.split("-", 3)
+        let day = date[2].split("T")
+        let wholeDate = date[1] + "/" + day[0] + "/" + date[0]
+        array.push(createData(result.data[i]['uniId'], result.data[i]['Day'], wholeDate, result.data[i]['StartTime'],
           result.data[i]['EndTime'], result.data[i]['TimeBlock']))
         
       }
@@ -361,6 +360,7 @@ class EnhancedTable extends React.Component {
                       <TableCell component="th" scope="row" padding="none">
                         {n.day}
                       </TableCell>
+                      <TableCell align="left">{n.date}</TableCell>
                       <TableCell align="left">{n.starttime}</TableCell>
                       <TableCell align="left">{n.endtime}</TableCell>
                       <TableCell align="left">{n.timeblock}</TableCell>

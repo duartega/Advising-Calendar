@@ -147,7 +147,6 @@ let EnhancedTableToolbar = props => {
       console.log(values[i]);
       axios.delete(`/Advising/deleteNotes/${values[i]}`);
     }
-    //alert("item/s deleted!")
     updateSelected(values);
   }
 

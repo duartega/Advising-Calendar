@@ -18,11 +18,13 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import axios from './ConfigAxios';
 import red from '@material-ui/core/colors/red';
+import { getDay, format, parse, getDate, getYear, getMonth } from 'date-fns/esm';
+
 document.title = 'My Appointments'; // Tab Title
 
 
-function createData(id, day, starttime, endtime, timeblock, instructor_fname, instructor_lname) {
-  return {id, day, starttime, endtime, timeblock, instructor_fname, instructor_lname};
+function createData(id, day, date, starttime, endtime, timeblock, instructor_fname, instructor_lname) {
+  return {id, day, date, starttime, endtime, timeblock, instructor_fname, instructor_lname};
 }
 
 function desc(a, b, orderBy) {
@@ -51,6 +53,7 @@ function getSorting(order, orderBy) {
 
 const rows = [
   { id: 'day', numeric: false, disablePadding: false, label: 'Days' },
+  { id: 'Date', numeric: false, disablePadding: false, label: 'Date' },
   { id: 'starttime', numeric: false, disablePadding: false, label: 'Start Times' },
   { id: 'endtime', numeric: false, disablePadding: false, label: 'End Times' },
   { id: 'timeblock', numeric: false, disablePadding: false, label: 'Time Blocks' },
@@ -144,7 +147,6 @@ let EnhancedTableToolbar = props => {
   function deleteRow() {
     let values = Selected;
     for(let i = 0; i < values.length; i++) {
-      console.log(values[i]);
       axios.delete(`/Student/DeleteAppointment/${Selected[i]}/${student_id}`);
     }
     //alert("item/s deleted!")
@@ -164,7 +166,7 @@ let EnhancedTableToolbar = props => {
           </Typography>
         ) : (
           <Typography variant="h6" id="tableTitle">
-            My current advising appointments
+            My scheduled (upcoming) advising appointments
           </Typography>
         )}
       </div>
@@ -231,15 +233,24 @@ class EnhancedTable extends React.Component {
   update = (props) => {
     const { id } = this.props;
     let array = [];
+    this.setState({student_id: id})
+
     // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
     axios.get(`/Student/getStudentAppointements/${id}`).then(result => {
+      axios.get(`/Student/getProfessorName/${id}`).then(profNameResult => {
+        for(let i = 0; i < result.data.length; i++) {
+          let d = result.data[i]['startDate'];
+          let date = d.split("-", 3)
+          let day = date[2].split("T")
+          let wholeDate = date[1] + "/" + day[0] + "/" + date[0]
 
-      for(let i = 0; i < result.data.length; i++) {
-        array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], result.data[0][i]['StartTime'],
-          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock']))
-      }
-      this.setState({
-        data: array
+          array.push(createData(result.data[i]['uniId'], result.data[i]['Day'], wholeDate, result.data[i]['StartTime'],
+            result.data[i]['EndTime'], result.data[i]['TimeBlock'], 
+            profNameResult.data[0][0]['fname'], profNameResult.data[0][0]['lname']))
+        }
+        this.setState({
+          data: array
+        })
       })
     })
   }
@@ -253,7 +264,12 @@ class EnhancedTable extends React.Component {
     axios.get(`/Student/getStudentAppointements/${id}`).then(result => {
       axios.get(`/Student/getProfessorName/${id}`).then(profNameResult => {
         for(let i = 0; i < result.data.length; i++) {
-          array.push(createData(result.data[i]['uniId'], result.data[i]['Day'], result.data[i]['StartTime'],
+          let d = result.data[i]['startDate'];
+          let date = d.split("-", 3)
+          let day = date[2].split("T")
+          let wholeDate = date[1] + "/" + day[0] + "/" + date[0]
+
+          array.push(createData(result.data[i]['uniId'], result.data[i]['Day'], wholeDate, result.data[i]['StartTime'],
             result.data[i]['EndTime'], result.data[i]['TimeBlock'], 
             profNameResult.data[0][0]['fname'], profNameResult.data[0][0]['lname']))
         }
@@ -369,6 +385,7 @@ class EnhancedTable extends React.Component {
                       <TableCell component="th" scope="row" padding="none">
                         {n.day}
                       </TableCell>
+                      <TableCell align="left">{n.date}</TableCell>
                       <TableCell align="left">{n.starttime}</TableCell>
                       <TableCell align="left">{n.endtime}</TableCell>
                       <TableCell align="left">{n.timeblock}</TableCell>
