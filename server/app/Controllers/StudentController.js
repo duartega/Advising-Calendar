@@ -51,7 +51,7 @@ class StudentController {
     async getStudentAppointements(ctx) {
         return new Promise((resolve, reject) => {
             // Get the students scheduled appointments
-            let query = "select * from AdvisingTimes where Student_ID_Registered = ?;";
+            let query = "select * from AdvisingTimes where Student_ID_Registered = ? and startDate >= date(SYSDATE());";
            
             dbConnection.query(
                 {

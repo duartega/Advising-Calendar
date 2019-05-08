@@ -8,6 +8,7 @@ import EditSchedule from './EditSchedule';
 import AdvisingTimes from './AdvisingTimes';
 import Appointments from './Appointments';
 import StudentAppointments from './StudentAppointments';
+import History from './StudentHistory';
 
 import {
   Route
@@ -156,6 +157,9 @@ class App extends React.Component {
             render = {(props) => <AdvisingTimes id = {this.state.id} instructor_id = {this.state.instructor_id} />}
             />
 
+            <Route exact path = "/History"
+            render = {(props) => <History id = {this.state.id} instructor_id = {this.state.instructor_id} /> }
+              />
             </div>
           );
         } else if (this.state.role === 1 && this.state.loggedIn === true) { //ADVISOR
