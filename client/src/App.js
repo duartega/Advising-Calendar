@@ -9,6 +9,7 @@ import AdvisingTimes from './AdvisingTimes';
 import Appointments from './Appointments';
 import StudentAppointments from './StudentAppointments';
 import History from './StudentHistory';
+import MyAdvisees from './AdvisorsStudents';
 
 import {
   Route
@@ -178,6 +179,8 @@ class App extends React.Component {
               />
               <Route exact path = "/UserList"
               render = {(props) => <UserList id={this.state.id}/>}/>
+              <Route exact path = "/MyAdvisees"
+              render = {(props) => <MyAdvisees id={this.state.id}/>}/>
               <Route exact path = "/Appointments"
               render = {(props) => <Appointments id = {this.state.id} />}/>
               <Route exact path = "/AdvisorHistory"
