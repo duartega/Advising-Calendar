@@ -227,8 +227,31 @@ class AdvisingController {
                 return resolve();
             });
         }).catch(err => console.log("Database connection error.", err));
+    }
+
+    async GetMyAdvisees(ctx) {
+        return new Promise((resolve, reject) => {
+            console.log("TIS TEST", ctx.params)
+        let query = "select user_id, fName, lName from students where instructor_id = ?;";
+	    console.log('About to run this query.', query);
+        dbConnection.query(
+            {
+                sql: query,
+                values: [ctx.params._instructor_id]
+            }, (error, tuples) => {
+                if (error) {
+                    ctx.body = [];
+                    ctx.status = 200;
+                    return reject(error);
+                }
+                ctx.body = tuples;
+                ctx.status = 200;
+                return resolve();
+            });
+        }).catch(err => console.log("Database connection error.", err));
 
     }
+
 
     async GetStudentInfo(ctx) {
         return new Promise((resolve, reject) => {

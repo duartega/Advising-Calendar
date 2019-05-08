@@ -48,6 +48,7 @@ AdvisingRouter.get('/RegisteredAppointments/:_instructor_id', AdvisingController
 AdvisingRouter.get('/getStudentName/:_student_id', AdvisingController.GetStudentName, (err) => console.log("routers.js: AdvisingRouter error:", err));
 AdvisingRouter.post('/notifyStudent/:studentId', AdvisingController.notifyStudent, (err) => console.log("routers.js: AdvisingRouter error:", err));
 AdvisingRouter.get('/GetAllUsers', AdvisingController.getAllUsers, (err) => console.log("routers.js: AdvisingRouter error:", err));
+AdvisingRouter.get('/MyAdvisees/:_instructor_id', AdvisingController.GetMyAdvisees, (err) => console.log("routers.js: AdvisingRouter error:", err));
 AdvisingRouter.get('/GetStudentInfo/:fname', AdvisingController.GetStudentInfo, (err) => console.log("routers.js: AdvisingRouter error:", err));
 AdvisingRouter.post('/addNote/:advisorid/:id/:fname/:lname/:note', AdvisingController.addNote, (err) => console.log("routers.js: AdvisingRouter error:", err));
 AdvisingRouter.get('/getNotes/:advisorid', AdvisingController.getNotes, (err) => console.log("routers.js: AdvisingRouter error:", err));
