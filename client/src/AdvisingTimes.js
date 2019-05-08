@@ -15,11 +15,8 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
 import axios from './ConfigAxios';
-import Button from '@material-ui/core/Button';
 import green from '@material-ui/core/colors/green';
 document.title = 'Add Appointment'; // Tab Title
 
@@ -142,7 +139,7 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-  const { data, Selected, numSelected, classes, updateSelected, update, student_id, instructor_fname, instructor_lname } = props;
+  const { data, Selected, numSelected, classes, updateSelected, student_id, instructor_fname, instructor_lname } = props;
   
 
   function addRow() {
@@ -227,7 +224,7 @@ class EnhancedTable extends React.Component {
 
   // This is the function to pull the data again when the user clicks the refresh button
   update = (props) => {
-    const { id, instructor_id } = this.props;
+    const { id } = this.props;
     let array = [];
     // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
     axios.get(`/Student/getAdvisingTimes/${id}`).then(result => {
@@ -242,7 +239,7 @@ class EnhancedTable extends React.Component {
   }
 
   async componentDidMount() {
-    const { id, instructor_id } = this.props;
+    const { id } = this.props;
     let array = [];
     this.setState({student_id: id})
 

@@ -37,9 +37,8 @@ class LongMenu extends React.Component {
           open={Boolean(anchorEl)}
           onClose={this.handleClose}
         >
-          <MenuItem onClick={this.handleClose}><Link className="App-link2" to="/UserList">User List</Link></MenuItem>
-          <MenuItem onClick={this.handleClose}><Link className="App-link2" to="/Appointments">Appointments</Link></MenuItem>
-          <MenuItem onClick={this.handleClose}><Link className="App-link2" to="/EditSchedule">Edit Schedule</Link></MenuItem>
+          <MenuItem onClick={this.handleClose}><Link className="App-link2" to="/AdvisingTimes">Find Advising Times</Link></MenuItem>
+          <MenuItem onClick={this.handleClose}><Link className="App-link2" to="/Appointments">My Appointments</Link></MenuItem>
         </Menu>
       </div>
     );
