@@ -55,7 +55,6 @@ const rows = [
   { id: 'endtime', numeric: false, disablePadding: false, label: 'End Times' },
   { id: 'timeblock', numeric: false, disablePadding: false, label: 'Time Blocks' },
   { id: 'studentRegistered', numeric: false, disablePadding: false, label: 'Student Registered' },
-  { id: 'Notes', numeric: false, disablePadding: false, label: 'Notes' },
 
 ];
 
@@ -374,7 +373,7 @@ class EnhancedTable extends React.Component {
                       <TableCell padding="checkbox">
                         <Checkbox checked={isSelected} />
                       </TableCell>
-                      <TableCell component="th" scope="row" padding="none">
+                      <TableCell component="th" scope="row" padding="none"> 
                         {n.day}
                       </TableCell>
                       <TableCell align="left">{n.starttime}</TableCell>

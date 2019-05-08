@@ -8,6 +8,7 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
+import axios from './ConfigAxios';
 
 const DialogTitle = withStyles(theme => ({
   root: {
@@ -52,7 +53,9 @@ const DialogActions = withStyles(theme => ({
 
 class UserPop extends React.Component {
   state = {
-    open: true,
+    open: false,
+    text: '',
+    data: []
   };
 
   handleClickOpen = () => {
@@ -61,74 +64,61 @@ class UserPop extends React.Component {
     });
   };
 
+  handleCloseSubmit = () => {
+    const { row, id } = this.props;
+    console.log(id, row['id'], row['fname'], row['lname'], this.state.text)
+    axios.post(`/Advising/addNote/${id}/${row['id']}/${row['fname']}/${row['lname']}/${this.state.text}`)
+    this.setState({ 
+      open: false,
+      text: '',
+      data: []
+     });
+  };
+
   handleClose = () => {
-    this.setState({ open: false });
+    this.setState({ 
+      open: false,
+      text: '',
+      data: []
+     });
+  };
+
+  handleTextChange = (event) => {
+    this.setState({
+      text: event.target.value
+    });
   };
 
   render() {
-    const { user, value } = this.props;
-
-    console.log(this.state.open)
-    if(value === true && user !== undefined) {
-        return (
-        <div>
-            <Dialog
-            onClose={this.handleClose}
-            aria-labelledby="customized-dialog-title"
-            open={this.state.open}
-            >
-            <DialogTitle id="customized-dialog-title" onClose={this.handleClose}>
-                Student
-            </DialogTitle>
-            <DialogContent>
-            <Typography gutterBottom>
-            <table>
-                <tr>
-                    <th>ID</th>
-                    &nbsp;
-                    &nbsp;
-                    <th>User</th> 
-                    &nbsp;
-                    &nbsp;
-                    <th>First Name</th>
-                    &nbsp;
-                    &nbsp;
-                    <th>Last Name</th>
-                    &nbsp;
-                    &nbsp;
-                </tr>
-                <tr>
-                    <td>{user['id']}</td>
-                    &nbsp;
-                    &nbsp;
-                    <td>{user['user']}</td> 
-                    &nbsp;
-                    &nbsp;
-                    <td>{user['fname']}</td>
-                    &nbsp;
-                    &nbsp;
-                    <td>{user['lname']}</td>
-                    &nbsp;
-                    &nbsp;
-                </tr>
-            </table>
-            </Typography>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={this.handleClose} color="primary">
-                Save changes
-                </Button>
-            </DialogActions>
-            </Dialog>
-        </div>
-        );
-  }
-  else {
     return (
-        <div></div>
-    )
+      <div>
+        <Button variant="outlined" onClick={this.handleClickOpen}>
+          Add Note
+        </Button>
+        <Dialog
+          onClose={this.handleClose}
+          aria-labelledby="customized-dialog-title"
+          open={this.state.open}
+        >
+          <DialogTitle id="customized-dialog-title" onClose={this.handleClose}>
+            Private Note
+          </DialogTitle>
+          <DialogContent>
+            <Typography gutterBottom>
+            <center><textarea onChange={this.handleTextChange} rows="4" cols="50">
+              Type Note Here...
+            </textarea></center>
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleCloseSubmit} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
   }
-}
 }
 
 export default UserPop;

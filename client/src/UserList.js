@@ -14,6 +14,9 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import axios from './ConfigAxios';
+import UserPop from './UserPop';
+import Typography from '@material-ui/core/Typography';
+import NotePopUp from './NotePopUp';
 
 const actionsStyles = theme => ({
   root: {
@@ -133,7 +136,7 @@ class CustomPaginationActionsTable extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, id } = this.props;
     const { rows, rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
@@ -144,7 +147,11 @@ class CustomPaginationActionsTable extends React.Component {
         <div className={classes.tableWrapper}>
         <br></br>
         <br></br>
-        <b>&nbsp;User List:</b>
+        <NotePopUp id={id}/>
+        &nbsp;
+        <Typography variant="h6" id="tableTitle">
+        &nbsp;&nbsp;&nbsp;&nbsp;User List
+        </Typography>
         <br></br>
         <br></br>
           <Table className={classes.table}>
@@ -156,6 +163,7 @@ class CustomPaginationActionsTable extends React.Component {
                   </TableCell>
                   <TableCell align="right">{row['fname']}</TableCell>
                   <TableCell align="right">{row['lname']}</TableCell>
+                  <TableCell align="right"><UserPop row={row} id={id}/></TableCell>
                 </TableRow>
               ))}
               {emptyRows > 0 && (

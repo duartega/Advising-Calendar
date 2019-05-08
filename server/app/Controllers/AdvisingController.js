@@ -25,7 +25,30 @@ class AdvisingController {
                 user: null
             };
         });
+    }
 
+    async addNote(ctx) {
+        return new Promise((resolve, reject) => {
+        let query = "INSERT INTO AdvisorNotes (advisorid, id, fname, lname, note) VALUES (?, ?, ?, ?, ?);";
+	    console.log('About to run this query.', query);
+            dbConnection.query(
+                {
+                    sql: query,
+                    values: [ctx.params.advisorid, ctx.params.id, ctx.params.fname, ctx.params.lname, ctx.params.note]
+                }, (error) => {
+                    if (error) {
+                        return reject(error);
+                    }
+                }
+                
+            )
+        }).catch(err => {
+            ctx.body = {
+                status: "Failed",
+                error: err,
+                user: null
+            };
+        });
     }
 
     async getTimes(ctx) {
@@ -208,6 +231,50 @@ class AdvisingController {
 
     }
 
+    async getNotes(ctx) {
+        return new Promise((resolve, reject) => {
+        let query = "SELECT * FROM AdvisorNotes WHERE advisorId = ?;";
+	    console.log('About to run this query.', query);
+        dbConnection.query(
+            {
+                sql: query,
+                values: [ctx.params.advisorid]
+            }, (error, tuples) => {
+                if (error) {
+                    ctx.body = [];
+                    ctx.status = 200;
+                    return reject(error);
+                }
+                ctx.body = tuples;
+                ctx.status = 200;
+                return resolve();
+            });
+        }).catch(err => console.log("Database connection error.", err));
+
+    }
+
+    async deleteNotes(ctx) {
+        return new Promise((resolve, reject) => {
+        let query = "Delete from AdvisorNotes where uniId = ?";
+	    console.log('About to run this query.', query);
+        console.log('ctx.params.uniId is', ctx.params.uniId);
+        dbConnection.query(
+            {
+                sql: query,
+                values: [ctx.params.uniId]
+            }, (error, tuples) => {
+                if (error) {
+                    ctx.body = [];
+                    ctx.status = 200;
+                    return reject(error);
+                }
+                ctx.body = tuples;
+                ctx.status = 200;
+                return resolve();
+            });
+        }).catch(err => console.log("Database connection error.", err));
+
+    }
 }
 
 module.exports = AdvisingController;

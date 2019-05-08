@@ -71,10 +71,11 @@ function ButtonAppBar(props) {
             <Search/>
             &nbsp;
             &nbsp;
+            <AdvisorLongMenu/>
             &nbsp;
             <Button onClick={logout} color="inherit">Logout</Button>
             &nbsp;
-            <AdvisorLongMenu/>
+            
           </Toolbar>
         </AppBar>
       </div>

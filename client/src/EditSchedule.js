@@ -156,7 +156,6 @@ const styles = theme => ({
 
     render() {
       const { classes, id } = this.props;
-  
       return (
           <div>
             <br></br>
@@ -217,12 +216,12 @@ const styles = theme => ({
                 }}
                 /> 
                 </form>
-
+                &nbsp;
+                &nbsp;
                 <form className={classes.container} noValidate>
                 {/* render = {(props) => <EditSchedule id = {this.state.id} */}
                   <StartDatePicker onChange={this.onChange} value={this.state.startdate} action={this.startDateChange} />
-                </form>
-                <form className={classes.container} noValidate>
+                  <br></br>
                   <EndDatePicker onChange={this.onChange} value={this.state.enddate} action={this.endDateChange}/>
                 </form>
             </form>

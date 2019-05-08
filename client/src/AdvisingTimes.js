@@ -247,25 +247,18 @@ class EnhancedTable extends React.Component {
     axios.get(`/Student/getAdvisingTimes/${id}`).then(result => {
       axios.get(`/Student/getProfessorName/${id}`).then(profNameResult => {
       console.log(profNameResult.data[0][0]);
-      for(let i = 0; i < result.data[0].length; i++) {
+      for(let i = 0; i < result.data.length; i++) {
         array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], result.data[0][i]['StartTime'],
           result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock'], 
           profNameResult.data[0][0]['fname'], profNameResult.data[0][0]['lname']))
       }
       this.setState({
-        data: array
+        data: array,
+        instructor_fname: profNameResult.data[0][0]['fname'],
+        instructor_lname: profNameResult.data[0][0]['lname'],
       })
     })
   })
-
-    // axios.get(`/Student/getProfessorName/${id}`).then(result => {
-    //   console.log(result.data[0][0])
-    //   this.setState({
-    //     instructor_fname: result.data[0][0]['fname'],
-    //     instructor_lname: result.data[0][0 ]['lname']
-    //   })
-    // })
-
   }
 
   updateSelected=(values) => {

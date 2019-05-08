@@ -1,12 +1,13 @@
 import React from 'react';
+import AdvisorHistory from './AdvisorHistory';
 import UserList from './UserList';
 import axios from './ConfigAxios';
 import Login from './Login';
 import Navbar from './Navbar';
 import EditSchedule from './EditSchedule';
 import AdvisingTimes from './AdvisingTimes';
-import Appointments from './Appointments'
-import StudentAppointments from './StudentAppointments'
+import Appointments from './Appointments';
+import StudentAppointments from './StudentAppointments';
 
 import {
   Route
@@ -172,9 +173,11 @@ class App extends React.Component {
               render = {(props) => <EditSchedule id = {this.state.id} />}
               />
               <Route exact path = "/UserList"
-              render = {(props) => <UserList />}/>
+              render = {(props) => <UserList id={this.state.id}/>}/>
               <Route exact path = "/Appointments"
               render = {(props) => <Appointments id = {this.state.id} />}/>
+              <Route exact path = "/AdvisorHistory"
+              render = {(props) => <AdvisorHistory />}/>
               </div >
               );
             }

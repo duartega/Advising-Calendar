@@ -21,8 +21,8 @@ import red from '@material-ui/core/colors/red';
 document.title = 'My Appointments'; // Tab Title
 
 
-function createData(id, day, starttime, endtime, timeblock) {
-  return {id, day, starttime, endtime, timeblock};
+function createData(id, day, starttime, endtime, timeblock, instructor_fname, instructor_lname) {
+  return {id, day, starttime, endtime, timeblock, instructor_fname, instructor_lname};
 }
 
 function desc(a, b, orderBy) {
@@ -56,8 +56,6 @@ const rows = [
   { id: 'timeblock', numeric: false, disablePadding: false, label: 'Time Blocks' },
   { id: 'AdvisorLastName', numeric: false, disablePadding: false, label: 'Advisor Last Name' },
   { id: 'AdvisorFirstName', numeric: false, disablePadding: false, label: 'Advisor First Name' },
-  { id: 'Notes', numeric: false, disablePadding: false, label: 'Notes' },
-
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -253,13 +251,15 @@ class EnhancedTable extends React.Component {
 
     // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
     axios.get(`/Student/getStudentAppointements/${id}`).then(result => {
-      console.log("STUDENT APPTS:", result.data)
-      for(let i = 0; i < result.data.length; i++) {
-        array.push(createData(result.data[i]['uniId'], result.data[i]['Day'], result.data[i]['StartTime'],
-          result.data[i]['EndTime'], result.data[i]['TimeBlock']))
-      }
-      this.setState({
-        data: array
+      axios.get(`/Student/getProfessorName/${id}`).then(profNameResult => {
+        for(let i = 0; i < result.data.length; i++) {
+          array.push(createData(result.data[i]['uniId'], result.data[i]['Day'], result.data[i]['StartTime'],
+            result.data[i]['EndTime'], result.data[i]['TimeBlock'], 
+            profNameResult.data[0][0]['fname'], profNameResult.data[0][0]['lname']))
+        }
+        this.setState({
+          data: array
+        })
       })
     })
   }
@@ -372,9 +372,8 @@ class EnhancedTable extends React.Component {
                       <TableCell align="left">{n.starttime}</TableCell>
                       <TableCell align="left">{n.endtime}</TableCell>
                       <TableCell align="left">{n.timeblock}</TableCell>
-                      <TableCell align="left">{n.AdvisorLastName}</TableCell>
-                      <TableCell align="left">{n.AdvisorFirstName}</TableCell>
-                      <TableCell align="left">{n.Notes}</TableCell>
+                      <TableCell align="left">{n.instructor_fname}</TableCell>
+                      <TableCell align="left">{n.instructor_lname}</TableCell>
                     </TableRow>
                   );
                 })}
