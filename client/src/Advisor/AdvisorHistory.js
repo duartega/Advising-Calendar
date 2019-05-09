@@ -184,7 +184,7 @@ const styles = theme => ({
 class EnhancedTable extends React.Component {
   state = {
     order: 'asc',
-    orderBy: 'day',
+    orderBy: 'date',
     selected: [],
     data: [],
     page: 0,
