@@ -13,15 +13,14 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
-import axios from './ConfigAxios';
-import Button from '@material-ui/core/Button';
+import axios from '../ConfigAxios';
+import red from '@material-ui/core/colors/red';
+document.title = 'My Appointments'; // Tab Title
 
-function createData(id, stuId, fname, lname, note) {
-  return {id, stuId, fname, lname, note};
+
+function createData(id, day, date, starttime, endtime, timeblock) {
+  return {id, day, date, starttime, endtime, timeblock};
 }
 
 function desc(a, b, orderBy) {
@@ -49,10 +48,11 @@ function getSorting(order, orderBy) {
 }
 
 const rows = [
-  { id: 'stuId', numeric: false, disablePadding: false, label: 'ID' },
-  { id: 'fname', numeric: false, disablePadding: false, label: 'First Name' },
-  { id: 'lname', numeric: false, disablePadding: false, label: 'Last Name' },
-  { id: 'note', numeric: false, disablePadding: false, label: 'Note' },
+  { id: 'day', numeric: false, disablePadding: false, label: 'Days' },
+  { id: 'date', numeric: false, disablePadding: false, label: 'Date' },
+  { id: 'starttime', numeric: false, disablePadding: false, label: 'Start Times' },
+  { id: 'endtime', numeric: false, disablePadding: false, label: 'End Times' },
+  { id: 'timeblock', numeric: false, disablePadding: false, label: 'Time Blocks' },
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -66,13 +66,13 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
+          {/* <TableCell padding="checkbox">
             <Checkbox
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={numSelected === rowCount}
               onChange={onSelectAllClick}
             />
-          </TableCell>
+          </TableCell> */}
           {rows.map(
             row => (
               <TableCell
@@ -114,24 +114,21 @@ EnhancedTableHead.propTypes = {
 };
 
 const toolbarStyles = theme => ({
+
   root: {
     paddingRight: theme.spacing.unit,
+    color: red[200],
   },
-  highlight:
-    theme.palette.type === 'light'
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
+
+  highlight: {
+          color: red[200],
+          backgroundColor: red[900],
         },
   spacer: {
     flex: '1 1 100%',
   },
   actions: {
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.primary,
   },
   title: {
     flex: '0 0 auto',
@@ -139,16 +136,7 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-  const { Selected, numSelected, classes, updateSelected, update } = props;
-
-  function deleteRow() {
-    let values = Selected;
-    for(let i = 0; i < values.length; i++) {
-      console.log(values[i]);
-      axios.delete(`/Advising/deleteNotes/${values[i]}`);
-    }
-    updateSelected(values);
-  }
+  const { Selected, numSelected, classes, updateSelected, student_id } = props;
 
   return (
     <Toolbar
@@ -163,25 +151,12 @@ let EnhancedTableToolbar = props => {
           </Typography>
         ) : (
           <Typography variant="h6" id="tableTitle">
+            My past advising appointments
           </Typography>
         )}
       </div>
       <div className={classes.spacer} />
-      <div className={classes.actions}>
-        {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton onClick={deleteRow} aria-label="Delete">
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="refresh">
-            <Button variant="outlined" color="primary" className={classes.button} onClick={update} aria-label="refresh">
-              Refresh
-            </Button>
-          </Tooltip>
-        )}
-      </div>
+
     </Toolbar>
   );
 };
@@ -214,20 +189,19 @@ class EnhancedTable extends React.Component {
     data: [],
     page: 0,
     rowsPerPage: 5,
+    student_id: this.props.id,
   };
 
+  // This is the function to pull the data again when the user clicks the refresh button
   update = (props) => {
     const { id } = this.props;
     let array = [];
-    axios.get(`/Advising/getNotes/${id}`).then(result => {
+    // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
+    axios.get(`/Student/getAppointmentHistory/${id}`).then(result => {
+
       for(let i = 0; i < result.data.length; i++) {
-        /*console.log(result.data[i]['Day'])
-        console.log(result.data[i]['StartTime'])
-        console.log(result.data[i]['EndTime'])
-        console.log(result.data[i]['TimeBlock'])*/
-        array.push(createData(result.data[i]['uniId'], result.data[i]['id'], result.data[i]['fname'],
-          result.data[i]['lname'], result.data[i]['note']))
-        
+        array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], result.data[0][i]['StartTime'],
+          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock']))
       }
       this.setState({
         data: array
@@ -235,20 +209,23 @@ class EnhancedTable extends React.Component {
     })
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { id } = this.props;
     let array = [];
-    axios.get(`/Advising/getNotes/${id}`).then(result => {
-      for(let i = 0; i < result.data.length; i++) {
-        /*console.log(result.data[i]['Day'])
-        console.log(result.data[i]['StartTime'])
-        console.log(result.data[i]['EndTime'])
-        console.log(result.data[i]['TimeBlock'])*/
-        array.push(createData(result.data[i]['uniId'], result.data[i]['id'], result.data[i]['fname'],
-          result.data[i]['lname'], result.data[i]['note']))
-      }
-      this.setState({
-        data: array
+    this.setState({student_id: id})
+    // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
+    axios.get(`/Advising/getAppointmentHistory/${id}`).then(result => {
+        for(let i = 0; i < result.data[0].length; i++) {
+          let d = result.data[0][i]['startDate'];
+          let date = d.split("-", 3)
+          let day = date[2].split("T")
+          let wholeDate = date[1] + "/" + day[0] + "/" + date[0]
+
+          array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], wholeDate, result.data[0][i]['StartTime'],
+            result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock']))
+        }
+        this.setState({
+          data: array
       })
     })
   }
@@ -258,7 +235,6 @@ class EnhancedTable extends React.Component {
     this.setState({selected: []})
 
     for(let i = 0; i < values.length; i++) {
-     // newData(values[i])
       for(let j = 0; j < newData.length; j++) {
         if(newData[j]['id'] === values[i]) {
           newData.splice(j, 1)
@@ -289,24 +265,24 @@ class EnhancedTable extends React.Component {
   };
 
   handleClick = (event, id) => {
-    const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
+    // const { selected } = this.state;
+    // const selectedIndex = selected.indexOf(id);
+    // let newSelected = [];
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
+    // if (selectedIndex === -1) {
+    //   newSelected = newSelected.concat(selected, id);
+    // } else if (selectedIndex === 0) {
+    //   newSelected = newSelected.concat(selected.slice(1));
+    // } else if (selectedIndex === selected.length - 1) {
+    //   newSelected = newSelected.concat(selected.slice(0, -1));
+    // } else if (selectedIndex > 0) {
+    //   newSelected = newSelected.concat(
+    //     selected.slice(0, selectedIndex),
+    //     selected.slice(selectedIndex + 1),
+    //   );
+    // }
 
-    this.setState({ selected: newSelected });
+    // this.setState({ selected: newSelected });
   };
 
   handleChangePage = (event, page) => {
@@ -326,7 +302,7 @@ class EnhancedTable extends React.Component {
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar numSelected={selected.length} Selected={selected} updateSelected={this.updateSelected} update={this.update}/>
+        <EnhancedTableToolbar numSelected={selected.length} Selected={selected} updateSelected={this.updateSelected} update={this.update} student_id={this.state.student_id}/>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
@@ -352,15 +328,16 @@ class EnhancedTable extends React.Component {
                       key={n.id}
                       selected={isSelected}
                     >
-                      <TableCell padding="checkbox">
+                      {/* <TableCell padding="checkbox">
                         <Checkbox checked={isSelected} />
+                      </TableCell> */}
+                      <TableCell component="th" scope="row" padding="checkbox">
+                        {n.day}
                       </TableCell>
-                      <TableCell component="th" scope="row" padding="none">
-                        {n.stuId}
-                      </TableCell>
-                      <TableCell align="left">{n.fname}</TableCell>
-                      <TableCell align="left">{n.lname}</TableCell>
-                      <TableCell align="left">{n.note}</TableCell>
+                      <TableCell align="left">{n.date}</TableCell>
+                      <TableCell align="left">{n.starttime}</TableCell>
+                      <TableCell align="left">{n.endtime}</TableCell>
+                      <TableCell align="left">{n.timeblock}</TableCell>
                     </TableRow>
                   );
                 })}

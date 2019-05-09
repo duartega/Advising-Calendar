@@ -7,10 +7,10 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import {Link} from 'react-router-dom';
 import './App.css';
-import Search from './Search';
-import AdvisorLongMenu from './AdvisorLongMenu';
-import StudentLongMenu from './StudentLongMenu';
-import History from './StudentHistory';
+import Search from './Advisor/Search';
+import AdvisorLongMenu from './Advisor/AdvisorLongMenu';
+import StudentLongMenu from './Student/StudentLongMenu';
+import History from './Student/StudentHistory';
 
 const styles = {
   root: {

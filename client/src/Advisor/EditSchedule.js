@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import EditTable from './EditTable';
-import axios from './ConfigAxios';
+import axios from '../ConfigAxios';
 import StartDatePicker from './StartDatePicker';
 import EndDatePicker from './EndDatePicker';
 import { getDay, /*format, parse,*/ getDate, getYear, getMonth } from 'date-fns/esm';

@@ -13,9 +13,13 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
+import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import axios from './ConfigAxios';
+import DeleteIcon from '@material-ui/icons/Delete';
+import axios from '../ConfigAxios';
 import red from '@material-ui/core/colors/red';
+import { getDay, format, parse, getDate, getYear, getMonth } from 'date-fns/esm';
+
 document.title = 'My Appointments'; // Tab Title
 
 
@@ -49,7 +53,7 @@ function getSorting(order, orderBy) {
 
 const rows = [
   { id: 'day', numeric: false, disablePadding: false, label: 'Days' },
-  { id: 'date', numeric: false, disablePadding: false, label: 'Date' },
+  { id: 'Date', numeric: false, disablePadding: false, label: 'Date' },
   { id: 'starttime', numeric: false, disablePadding: false, label: 'Start Times' },
   { id: 'endtime', numeric: false, disablePadding: false, label: 'End Times' },
   { id: 'timeblock', numeric: false, disablePadding: false, label: 'Time Blocks' },
@@ -68,13 +72,13 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          {/* <TableCell padding="checkbox">
+          <TableCell padding="checkbox">
             <Checkbox
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={numSelected === rowCount}
               onChange={onSelectAllClick}
             />
-          </TableCell> */}
+          </TableCell>
           {rows.map(
             row => (
               <TableCell
@@ -139,6 +143,15 @@ const toolbarStyles = theme => ({
 
 let EnhancedTableToolbar = props => {
   const { Selected, numSelected, classes, updateSelected, student_id } = props;
+ //https://material-ui.com/demos/dialogs/ this will give us a confirmation dialog
+  function deleteRow() {
+    let values = Selected;
+    for(let i = 0; i < values.length; i++) {
+      axios.delete(`/Student/DeleteAppointment/${Selected[i]}/${student_id}`);
+    }
+    //alert("item/s deleted!")
+    updateSelected(values);
+  }
 
   return (
     <Toolbar
@@ -153,15 +166,37 @@ let EnhancedTableToolbar = props => {
           </Typography>
         ) : (
           <Typography variant="h6" id="tableTitle">
-            My past advising appointments
+            My scheduled (upcoming) advising appointments
           </Typography>
         )}
       </div>
       <div className={classes.spacer} />
-
+      <div className={classes.actions}>
+        {
+          <Tooltip title="Delete Selected Appointment">
+            <IconButton onClick={deleteRow} aria-label="Delete Selected Appointment">
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        }
+      </div>
     </Toolbar>
   );
 };
+
+// {numSelected > 0 ? (
+//     <Tooltip title="Delete Selected Appointment">
+//       <IconButton onClick={deleteRow} aria-label="Delete Selected Appointment">
+//         <DeleteIcon />
+//       </IconButton>
+//     </Tooltip>
+//   ) : (
+//     <Tooltip title="refresh">
+//       <Button variant="outlined" color="primary" className={classes.button} onClick={update} aria-label="refresh">
+//         Refresh
+//       </Button>
+//     </Tooltip>
+//   )}
 
 EnhancedTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
@@ -198,15 +233,24 @@ class EnhancedTable extends React.Component {
   update = (props) => {
     const { id } = this.props;
     let array = [];
-    // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
-    axios.get(`/Student/getAppointmentHistory/${id}`).then(result => {
+    this.setState({student_id: id})
 
-      for(let i = 0; i < result.data.length; i++) {
-        array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], result.data[0][i]['StartTime'],
-          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock']))
-      }
-      this.setState({
-        data: array
+    // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
+    axios.get(`/Student/getStudentAppointements/${id}`).then(result => {
+      axios.get(`/Student/getProfessorName/${id}`).then(profNameResult => {
+        for(let i = 0; i < result.data.length; i++) {
+          let d = result.data[i]['startDate'];
+          let date = d.split("-", 3)
+          let day = date[2].split("T")
+          let wholeDate = date[1] + "/" + day[0] + "/" + date[0]
+
+          array.push(createData(result.data[i]['uniId'], result.data[i]['Day'], wholeDate, result.data[i]['StartTime'],
+            result.data[i]['EndTime'], result.data[i]['TimeBlock'], 
+            profNameResult.data[0][0]['fname'], profNameResult.data[0][0]['lname']))
+        }
+        this.setState({
+          data: array
+        })
       })
     })
   }
@@ -217,18 +261,16 @@ class EnhancedTable extends React.Component {
     this.setState({student_id: id})
 
     // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
-    axios.get(`/Student/getAppointmentHistory/${id}`).then(result => {
+    axios.get(`/Student/getStudentAppointements/${id}`).then(result => {
       axios.get(`/Student/getProfessorName/${id}`).then(profNameResult => {
-        console.log("THIS SHOULD SHOW DATE: ",  result.data)
-        for(let i = 0; i < result.data[0].length; i++) {
-
-          let d = result.data[0][i]['startDate'];
+        for(let i = 0; i < result.data.length; i++) {
+          let d = result.data[i]['startDate'];
           let date = d.split("-", 3)
           let day = date[2].split("T")
           let wholeDate = date[1] + "/" + day[0] + "/" + date[0]
-   
-          array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], wholeDate, result.data[0][i]['StartTime'],
-            result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock'],
+
+          array.push(createData(result.data[i]['uniId'], result.data[i]['Day'], wholeDate, result.data[i]['StartTime'],
+            result.data[i]['EndTime'], result.data[i]['TimeBlock'], 
             profNameResult.data[0][0]['fname'], profNameResult.data[0][0]['lname']))
         }
         this.setState({
@@ -243,6 +285,7 @@ class EnhancedTable extends React.Component {
     this.setState({selected: []})
 
     for(let i = 0; i < values.length; i++) {
+     // newData(values[i])
       for(let j = 0; j < newData.length; j++) {
         if(newData[j]['id'] === values[i]) {
           newData.splice(j, 1)
@@ -273,24 +316,24 @@ class EnhancedTable extends React.Component {
   };
 
   handleClick = (event, id) => {
-    // const { selected } = this.state;
-    // const selectedIndex = selected.indexOf(id);
-    // let newSelected = [];
+    const { selected } = this.state;
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
 
-    // if (selectedIndex === -1) {
-    //   newSelected = newSelected.concat(selected, id);
-    // } else if (selectedIndex === 0) {
-    //   newSelected = newSelected.concat(selected.slice(1));
-    // } else if (selectedIndex === selected.length - 1) {
-    //   newSelected = newSelected.concat(selected.slice(0, -1));
-    // } else if (selectedIndex > 0) {
-    //   newSelected = newSelected.concat(
-    //     selected.slice(0, selectedIndex),
-    //     selected.slice(selectedIndex + 1),
-    //   );
-    // }
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
 
-    // this.setState({ selected: newSelected });
+    this.setState({ selected: newSelected });
   };
 
   handleChangePage = (event, page) => {
@@ -336,10 +379,10 @@ class EnhancedTable extends React.Component {
                       key={n.id}
                       selected={isSelected}
                     >
-                      {/* <TableCell padding="checkbox">
+                      <TableCell padding="checkbox">
                         <Checkbox checked={isSelected} />
-                      </TableCell> */}
-                      <TableCell component="th" scope="row" padding="checkbox">
+                      </TableCell>
+                      <TableCell component="th" scope="row" padding="none">
                         {n.day}
                       </TableCell>
                       <TableCell align="left">{n.date}</TableCell>
