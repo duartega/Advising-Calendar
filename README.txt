@@ -22,3 +22,21 @@ run the client server on "PORT=1000"
 - modify "ConfigAxios.js" inside client directory to your api server
 "axios.defaults.baseURL = `http://www.cs.sonoma.edu:8131/api/v1`;"
 - finally, run server with "node server.js", run client with "npm run start"
+
+
+----------------------------------------------------------
+.:Test Accounts:.
+----------------------------------------------------------
+Professor:
+----------------------------------------------------------
+User: Ali        	Pass: Kooshesh
+User: Marilyn 		Pass: Coleman
+User: Daniel     	Pass: Stanley
+
+
+Students:
+----------------------------------------------------------
+User: jevan		Pass: jevan123
+User: a			Pass: a
+User: eric		Pass: cook
+
