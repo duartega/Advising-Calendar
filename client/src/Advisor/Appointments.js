@@ -16,7 +16,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
-import axios from './ConfigAxios';
+import axios from '../ConfigAxios';
 import red from '@material-ui/core/colors/red';
 document.title = 'My Appointments'; // Tab Title
 

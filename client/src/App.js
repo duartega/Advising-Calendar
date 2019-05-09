@@ -1,15 +1,15 @@
 import React from 'react';
-import AdvisorHistory from './AdvisorHistory';
-import UserList from './UserList';
+import AdvisorHistory from './Advisor/AdvisorHistory';
+import UserList from './Advisor/UserList';
 import axios from './ConfigAxios';
 import Login from './Login';
 import Navbar from './Navbar';
-import EditSchedule from './EditSchedule';
+import EditSchedule from './Advisor/EditSchedule';
 import AdvisingTimes from './AdvisingTimes';
-import Appointments from './Appointments';
-import StudentAppointments from './StudentAppointments';
-import History from './StudentHistory';
-import MyAdvisees from './AdvisorsStudents';
+import Appointments from './Advisor/Appointments';
+import StudentAppointments from './Student/StudentAppointments';
+import History from './Student/StudentHistory';
+import MyAdvisees from './Advisor/AdvisorsStudents';
 
 import {
   Route

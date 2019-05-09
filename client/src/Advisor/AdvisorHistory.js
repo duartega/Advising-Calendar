@@ -13,7 +13,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
-import axios from './ConfigAxios';
+import axios from '../ConfigAxios';
 import red from '@material-ui/core/colors/red';
 document.title = 'My Appointments'; // Tab Title
 

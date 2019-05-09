@@ -8,7 +8,7 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-import axios from './ConfigAxios';
+import axios from '../ConfigAxios';
 
 const DialogTitle = withStyles(theme => ({
   root: {

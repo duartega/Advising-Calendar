@@ -54,7 +54,7 @@ class AdvisingController {
 
     async getTimes(ctx) {
         return new Promise((resolve, reject) => {
-        let query = "select * from AdvisingTimes where startDate >= date(SYSDATE());";
+        let query = "select * from AdvisingTimes where startDate >= date(SYSDATE()) and id = ?;";
 	    console.log('About to run this query.', query);
         console.log('ctx.params.id is', ctx.params.id);
         dbConnection.query(
