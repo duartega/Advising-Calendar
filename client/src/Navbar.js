@@ -10,7 +10,6 @@ import './App.css';
 import Search from './Search';
 import AdvisorLongMenu from './AdvisorLongMenu';
 import StudentLongMenu from './StudentLongMenu';
-import History from './StudentHistory';
 
 const styles = {
   root: {

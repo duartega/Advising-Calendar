@@ -80,14 +80,19 @@ class Search extends Component {
   }
 
   handleEnter(name) {
+    let value = ''
     axios.get(`/Advising/GetStudentInfo/${name}`).then(result => {
       const userInfo = result.data;
       console.log(result['statusText'])
       if (result['statusText'] === 'OK' && userInfo[0]!== undefined) {
-        console.log(userInfo[0])
-        alert(` USERID: ${userInfo[0]['id']} || USER: ${userInfo[0]['user']} || FIRST NAME: ${userInfo[0]['fname']} || LAST NAME: ${userInfo[0]['lname']}`)
+        for(let i = 0; i < userInfo.length; i++) {
+         value += ` USERID: ${userInfo[i]['id']} || USER: ${userInfo[i]['user']} || FIRST NAME: ${userInfo[i]['fname']} || LAST NAME: ${userInfo[i]['lname']}`
+         value += '\n'
+        }
+        alert(value)
+
         this.setState({
-          result: userInfo[0]
+          result: userInfo
         });
       }
       else {
