@@ -18,8 +18,8 @@ import red from '@material-ui/core/colors/red';
 document.title = 'My Appointments'; // Tab Title
 
 
-function createData(id, day, date, starttime, endtime, timeblock) {
-  return {id, day, date, starttime, endtime, timeblock};
+function createData(id, day, date, starttime, endtime, timeblock, fname, lname) {
+  return {id, day, date, starttime, endtime, timeblock, fname, lname};
 }
 
 function desc(a, b, orderBy) {
@@ -52,6 +52,8 @@ const rows = [
   { id: 'starttime', numeric: false, disablePadding: false, label: 'Start Times' },
   { id: 'endtime', numeric: false, disablePadding: false, label: 'End Times' },
   { id: 'timeblock', numeric: false, disablePadding: false, label: 'Time Blocks' },
+  { id: 'fname', numeric: false, disablePadding: false, label: 'Student First Name' },
+  { id: 'lname', numeric: false, disablePadding: false, label: 'Student Last Name' },
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -200,7 +202,8 @@ class EnhancedTable extends React.Component {
 
       for(let i = 0; i < result.data.length; i++) {
         array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], result.data[0][i]['StartTime'],
-          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock']))
+          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock'],
+          result.data[0][i]['student_fname'], result.data[0][i]['student_lname']))
       }
       this.setState({
         data: array
@@ -221,7 +224,8 @@ class EnhancedTable extends React.Component {
           let wholeDate = date[1] + "/" + day[0] + "/" + date[0]
 
           array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], wholeDate, result.data[0][i]['StartTime'],
-            result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock']))
+            result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock'],
+            result.data[0][i]['student_fname'], result.data[0][i]['student_lname']))
         }
         this.setState({
           data: array
@@ -337,6 +341,8 @@ class EnhancedTable extends React.Component {
                       <TableCell align="left">{n.starttime}</TableCell>
                       <TableCell align="left">{n.endtime}</TableCell>
                       <TableCell align="left">{n.timeblock}</TableCell>
+                      <TableCell align="left">{n.fname}</TableCell>
+                      <TableCell align="left">{n.lname}</TableCell>
                     </TableRow>
                   );
                 })}

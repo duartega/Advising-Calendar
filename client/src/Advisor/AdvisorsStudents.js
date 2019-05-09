@@ -125,7 +125,6 @@ class CustomPaginationActionsTable extends React.Component {
         for(let i = 0; i < result.data.length; i++) {
             array.push(result.data[i])
           }
-          console.log("THIS IS THE ARRAY: ", array)
       this.setState({
         rows: array
       })

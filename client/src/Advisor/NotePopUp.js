@@ -90,7 +90,7 @@ class UserPop extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
-              Save
+              Close
             </Button>
           </DialogActions>
         </Dialog>

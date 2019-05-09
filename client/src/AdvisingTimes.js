@@ -140,14 +140,13 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-  const { data, Selected, numSelected, classes, updateSelected, student_id, instructor_fname, instructor_lname } = props;
+  const { data, Selected, numSelected, classes, updateSelected, student_id, instructor_fname, instructor_lname, student_fname, student_lname } = props;
   
-
   function addRow() {
     let values = Selected;
 
     for(let i = 0; i < values.length; i++) {
-      axios.post(`/Student/AddAppointment/${Selected[i]}/${student_id}`);
+      axios.post(`/Student/AddAppointment/${Selected[i]}/${student_id}/${student_fname}/${student_lname}`);
     }
     updateSelected(values);
   }
@@ -218,6 +217,8 @@ class EnhancedTable extends React.Component {
     student_id: this.props.id,
     instructor_fname: '',
     instructor_lname: '',
+    student_fname: '',
+    student_lname: '',
   };
   
 
@@ -244,6 +245,8 @@ class EnhancedTable extends React.Component {
         data: array,
         instructor_fname: profNameResult.data[0][0]['fname'],
         instructor_lname: profNameResult.data[0][0]['lname'],
+        student_fname: this.props.fname,
+        student_lname: this.props.lname,
       })
     })
   })
@@ -251,6 +254,7 @@ class EnhancedTable extends React.Component {
 
   async componentDidMount() {
     const { id } = this.props;
+
     let array = [];
     this.setState({student_id: id})
 
@@ -271,6 +275,8 @@ class EnhancedTable extends React.Component {
         data: array,
         instructor_fname: profNameResult.data[0][0]['fname'],
         instructor_lname: profNameResult.data[0][0]['lname'],
+        student_fname: this.props.fname,
+        student_lname: this.props.lname,
       })
     })
   })
@@ -357,6 +363,8 @@ class EnhancedTable extends React.Component {
         student_id={this.state.student_id}
         instructor_fname={this.state.instructor_fname}
         instructor_lname={this.state.instructor_lname}
+        student_fname={this.state.student_fname}
+        student_lname={this.state.student_lname}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">

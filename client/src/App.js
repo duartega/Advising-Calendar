@@ -19,10 +19,7 @@ document.title = 'Advising Calendar'; // Tab Title
 function checkNotifications(userId){
   axios.get(`/Student/getNotifications/${userId}`).then(result => {
     const userInfo = result.data;
-    console.log(userInfo)
     if (userInfo['status'] === 'OK') {
-      console.log(userId)
-      console.log(userInfo)
       if(userInfo['user']['notify'] === 1) {
         alert("An Advisor has removed one of your Appointments!")
         axios.post(`/Student/deleteNotifications/${userId}`)
@@ -143,7 +140,6 @@ class App extends React.Component {
           return ( 
             <div >
               {checkNotifications(this.state.id)}
-              {console.log("Here is the state: ", this.state)}
               <Navbar loggedIn = {this.state.loggedIn} logout = {this.handleLogout} 
               role = {this.state.role} 
               fname={this.state.fname}
@@ -155,7 +151,8 @@ class App extends React.Component {
               />
 
             <Route exact path = "/AdvisingTimes"
-            render = {(props) => <AdvisingTimes id = {this.state.id} instructor_id = {this.state.instructor_id} />}
+            render = {(props) => <AdvisingTimes id = {this.state.id} instructor_id = {this.state.instructor_id}
+            fname={this.state.fname} lname={this.state.lname} />}
             />
 
             <Route exact path = "/History"

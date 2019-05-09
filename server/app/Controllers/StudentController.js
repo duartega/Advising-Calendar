@@ -73,12 +73,12 @@ class StudentController {
     async AddAppointment(ctx) {
         return new Promise((resolve, reject) => {
             // Get the students scheduled appointments
-            let query = "call updateAdvisingTimesWithStudentID(?, ?)";
+            let query = "call updateAdvisingTimesWithStudentID(?, ?, ?, ?)";
            
             dbConnection.query(
                 {
                     sql: query,
-                    values: [ctx.params._uniId, ctx.params._student_id]
+                    values: [ctx.params._uniId, ctx.params._student_id, ctx.params.student_fname, ctx.params.student_lname]
                 }, (error, tuples) => {
                     if (error) {
                         ctx.body = [];

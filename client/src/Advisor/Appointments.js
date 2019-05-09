@@ -21,8 +21,8 @@ import red from '@material-ui/core/colors/red';
 document.title = 'My Appointments'; // Tab Title
 
 
-function createData(id, day, date, starttime, endtime, timeblock, studentRegistered) {
-  return {id, day, date, starttime, endtime, timeblock, studentRegistered};
+function createData(id, day, date, starttime, endtime, timeblock, studentRegistered, fname, lname) {
+  return {id, day, date, starttime, endtime, timeblock, studentRegistered, fname, lname};
 }
 
 function desc(a, b, orderBy) {
@@ -55,7 +55,9 @@ const rows = [
   { id: 'starttime', numeric: false, disablePadding: false, label: 'Start Times' },
   { id: 'endtime', numeric: false, disablePadding: false, label: 'End Times' },
   { id: 'timeblock', numeric: false, disablePadding: false, label: 'Time Blocks' },
-  { id: 'studentRegistered', numeric: false, disablePadding: false, label: 'Student Registered' },
+  { id: 'fname', numeric: false, disablePadding: false, label: 'Students First Name' },
+  { id: 'lname', numeric: false, disablePadding: false, label: 'Students Last Name' },
+  { id: 'studentRegistered', numeric: false, disablePadding: false, label: 'Student ID' },
 
 ];
 
@@ -246,7 +248,8 @@ class EnhancedTable extends React.Component {
         let day = date[2].split("T")
         let wholeDate = date[1] + "/" + day[0] + "/" + date[0]
         array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], wholeDate, result.data[0][i]['StartTime'],
-          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock'], result.data[0][i]['Student_ID_Registered']))
+          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock'], result.data[0][i]['Student_ID_Registered'],
+          result.data[0][i]['student_fname'], result.data[0][i]['student_lname']))
         anotherArray.push(result.data[0][i]['Student_ID_Registered'])
       }
       this.setState({
@@ -266,14 +269,14 @@ class EnhancedTable extends React.Component {
     // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
     axios.get(`/Advising/RegisteredAppointments/${id}`).then(result => {
       axios.get(`/Advising/getStudentName/${id}`).then(studentResult => {
-        
       for(let i = 0; i < result.data[0].length; i++) {
         let d = result.data[0][i]['startDate'];
         let date = d.split("-", 3)
         let day = date[2].split("T")
         let wholeDate = date[1] + "/" + day[0] + "/" + date[0]
         array.push(createData(result.data[0][i]['uniId'], result.data[0][i]['Day'], wholeDate, result.data[0][i]['StartTime'],
-          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock'], result.data[0][i]['Student_ID_Registered']))
+          result.data[0][i]['EndTime'], result.data[0][i]['TimeBlock'], result.data[0][i]['Student_ID_Registered'],
+          result.data[0][i]['student_fname'], result.data[0][i]['student_lname']))
         anotherArray.push(result.data[0][i]['Student_ID_Registered'])
       }
       this.setState({
@@ -386,13 +389,15 @@ class EnhancedTable extends React.Component {
                       <TableCell padding="checkbox">
                         <Checkbox checked={isSelected} />
                       </TableCell>
-                      <TableCell component="th" scope="row" padding="none"> 
+                      <TableCell component="th" scope="row" padding="none">
                         {n.day}
                       </TableCell>
                       <TableCell align="left">{n.date}</TableCell>
                       <TableCell align="left">{n.starttime}</TableCell>
                       <TableCell align="left">{n.endtime}</TableCell>
                       <TableCell align="left">{n.timeblock}</TableCell>
+                      <TableCell align="left">{n.fname}</TableCell>
+                      <TableCell align="left">{n.lname}</TableCell>
                       <TableCell align="left">{n.studentRegistered}</TableCell>
                       <TableCell align="left">{n.Notes}</TableCell>
                     </TableRow>

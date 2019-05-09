@@ -219,7 +219,6 @@ class EnhancedTable extends React.Component {
     // Get all the UNFILLED advising appointment slots for student view from their advisors advising times
     axios.get(`/Student/getAppointmentHistory/${id}`).then(result => {
       axios.get(`/Student/getProfessorName/${id}`).then(profNameResult => {
-        console.log("THIS SHOULD SHOW DATE: ",  result.data)
         for(let i = 0; i < result.data[0].length; i++) {
 
           let d = result.data[0][i]['startDate'];
